@@ -35,7 +35,8 @@
     }
 
     body {
-      font-family: 'Arial', sans-serif;
+      /* font-family: 'Arial', sans-serif; */
+      font-family: 'Cascadia Code', monospace;
       font-size: 1.1rem;
       background-color: var(--base);
       color: var(--text);
@@ -138,8 +139,9 @@
     }
 
     code {
-      color: var(--subtle);
+      color: var(--gold);
       background: var(--base);
+      line-height: 2.5em;
       padding-inline: 0.8rem;
       padding-block: 0.3rem;
       border-radius: 4px;
@@ -189,21 +191,19 @@
   </style>
   <style>
     a {
+      color: var(--love);
       text-decoration: none;
-      background: linear-gradient(90deg, var(--foam), var(--iris));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+      transition: color 0.3s ease;
     }
 
     a:hover {
-      background: linear-gradient(90deg, var(--gold), var(--rose));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--foam);
     }
 
-    a:active {
-      border-bottom: 2px solid var(--gold);
+    blockquote {
+      color: var(--muted);
+      padding-left: 1em;
+      border-left: .25em solid var(--muted);
     }
   </style>
   <style>
@@ -302,7 +302,7 @@
           <span>Home</span>
         </button>
         <div class="search-container">
-          <input type="text" class="search-input" placeholder="This does not work yet...">
+          <input type="text" class="search-input" placeholder="This doesn't work yet...">
           <button class="search-button" onclick="performSearch()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round"
