@@ -10,3 +10,9 @@ pulldown-cmark = "0.12.2"
 tokio = { version = "1.42.0", features = ["full"] }
 tower = "0.5.2"
 tower-http = { version = "0.6.2", features = ["fs"] }
+
+[profile.release]
+debug = false
+lto = true
+codegen-units = 1
+panic = "abort"
