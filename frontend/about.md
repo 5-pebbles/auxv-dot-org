@@ -1,8 +1,19 @@
-<div style="display: flex; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--overlay); margin-bottom: 30px; justify-content: center;">
+<style>
+@media (max-width: 750px) {
+  #heading {
+    flex-direction: column;
+  }
+  #title {
+    text-align: center;
+  }
+}
+</style>
 
-<img src="/images/profile_picture.jpeg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--iris); margin: 30px;">
+<div id="heading" style="display: flex; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--overlay); margin-bottom: 30px; justify-content: center;">
 
-<div style="margin-bottom: 32px;">
+<img id="profile-picture" src="/images/profile_picture.jpeg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--iris); margin: 30px; ">
+
+<div id="title" style="margin-bottom: 32px;">
 
 # Owen Friedman
 <span style="color: var(--subtle);">I am the slugcat, slayer of dragons, eater of bugs.</span>
@@ -14,8 +25,7 @@ A hangry(🌮) self-taught software developer trying to rewrite the world one li
 
 I am primarily focused on low-level systems development; it's my dream to have a Linux distribution consisting solely of software I have written.
 
-
-&nbsp;
+<br/>
 
 This is my website where I can whisper into the void about the things that fascinate me. I hope you enjoy and learn something new!
 
@@ -38,7 +48,6 @@ This is my website where I can whisper into the void about the things that fasci
   And they are made by Caterpillar the heavy equipment manufacturer.
 - **Leather Jacket** Literally body armor, best 50 bucks my Mom ever spent.
 
-
-&nbsp;
+<br/>
 
 > P.S. I was hungry while writing this hence all the food emojis.
