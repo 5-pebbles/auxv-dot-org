@@ -1,6 +1,6 @@
 <div style="display: flex; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--overlay); margin-bottom: 30px; justify-content: center;">
 
-<img src="/static/images/profile_picture" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--iris); margin: 30px;">
+<img src="/images/profile_picture.jpeg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--iris); margin: 30px;">
 
 <div style="margin-bottom: 32px;">
 

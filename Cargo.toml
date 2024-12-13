@@ -1,5 +1,5 @@
 [package]
-name = "site"
+name = "auxv"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,4 +8,5 @@ axum = "0.7.9"
 liquid = "0.26.9"
 pulldown-cmark = "0.12.2"
 tokio = { version = "1.42.0", features = ["full"] }
+tower = "0.5.2"
 tower-http = { version = "0.6.2", features = ["fs"] }
