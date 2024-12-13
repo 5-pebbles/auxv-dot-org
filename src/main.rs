@@ -1,12 +1,10 @@
 use axum::{
     extract::Request,
-    http::{Response, StatusCode},
+    http::Response,
     response::{Html, IntoResponse},
     routing::get,
     Router,
 };
-use liquid::ParserBuilder as LiquidParserBuilder;
-use pulldown_cmark::{html, CowStr, Event, Options, Parser as MarkdownParser, Tag, TagEnd};
 use std::{env, path::PathBuf};
 use tower::ServiceExt;
 use tower_http::services::{fs::ServeFileSystemResponseBody, ServeDir};

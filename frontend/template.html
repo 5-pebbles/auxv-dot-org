@@ -5,17 +5,37 @@
   <title>{{title}}</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/font/cascadia_code.css">
+  <!-- Normal CSS -->
   <link rel="stylesheet" href="/template.css" />
+  <!-- Load Twitter Emojis: -->
+  <script src="/emoji/twemoji.js"></script>
+  <script>
+    window.onload = function () {
+      twemoji.parse(document.body,
+        {
+          base: "/emoji/",
+          folder: 'svg',
+          ext: '.svg'
+        });
+    }
+  </script>
+  <style>
+    img.emoji {
+      height: 1em;
+      width: 1em;
+      margin: 0 .05em 0 .1em;
+      vertical-align: -0.1em;
+    }
+  </style>
+  <!-- Load Font (Cascadia Code): -->
+  <link rel="stylesheet" href="/font/cascadia_code.css" />
+  <!-- Highlight JS -->
+  <link rel="stylesheet" href="/highlight_js/rose-pine.css" />
   <link rel="stylesheet" href="/highlight_js/rose-pine.css" />
   <script src="/highlight_js/main.js"></script>
-
   <!-- load additional languages -->
   <script src="/highlight_js/langs/rust.js"></script>
-
   <script>hljs.highlightAll();</script>
-
-  <link rel="stylesheet" href="/highlight_js/rose-pine.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
