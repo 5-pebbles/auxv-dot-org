@@ -5,7 +5,11 @@ use axum::{
     routing::get,
     Router,
 };
-use std::{env, path::PathBuf};
+use std::{
+    env,
+    net::{Ipv4Addr, SocketAddr},
+    path::PathBuf,
+};
 use tower::ServiceExt;
 use tower_http::services::{fs::ServeFileSystemResponseBody, ServeDir};
 
@@ -51,21 +55,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .route("/*path", get(handle_route));
 
-    // Determine server address (default to 0.0.0.0:3000)
-    let address = env::args()
-        .nth(1)
-        .unwrap_or_else(|| "0.0.0.0:3000".to_string());
+    #[cfg(feature = "https")]
+    {
+        use rustls_acme::{caches::DirCache, AcmeConfig};
+        use tokio_stream::StreamExt;
 
-    println!("Listening on: {}", address);
+        // Enable TLS via Let's Encrypt:
+        let mut state = AcmeConfig::new(vec!["auxv.org"])
+            .contact(vec!["mailto:5-pebble@protonmail.com"])
+            .cache_option(Some(DirCache::new("lets_encrypt_cache")))
+            .directory_lets_encrypt(true)
+            .state();
+        let acceptor = state.axum_acceptor(state.default_rustls_config());
+        tokio::spawn(async move {
+            loop {
+                match state.next().await.unwrap() {
+                    Ok(ok) => println!("event: {:?}", ok),
+                    Err(err) => println!("error: {:?}", err),
+                }
+            }
+        });
 
-    // Create TCP listener and start server:
-    let listener = tokio::net::TcpListener::bind(address).await?;
-    axum::serve(listener, app).await?;
+        // Run the server with HTTPS:
+        let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, 443));
+        axum_server::bind(address)
+            .acceptor(acceptor)
+            .serve(app.into_make_service())
+            .await
+            .unwrap();
+    }
+    #[cfg(not(feature = "https"))]
+    {
+        // Run the server with HTTP:
+        let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, 80));
+        axum_server::bind(address)
+            .serve(app.into_make_service())
+            .await
+            .unwrap();
+    }
 
     Ok(())
 }
 
 async fn handle_route(request: Request) -> Result<ServerResponse, ServerError> {
+    println!("New Request: {}", request.uri().path());
     let file_path = PathBuf::from("frontend").join(request.uri().path().trim_start_matches('/'));
 
     if file_path.extension().is_some() {

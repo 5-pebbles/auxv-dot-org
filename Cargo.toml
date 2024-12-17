@@ -5,14 +5,21 @@ edition = "2021"
 
 [dependencies]
 axum = "0.7.9"
+axum-server = "0.7.1"
 liquid = "0.26.9"
 pulldown-cmark = "0.12.2"
 tokio = { version = "1.42.0", features = ["full"] }
 tower = "0.5.2"
 tower-http = { version = "0.6.2", features = ["fs"] }
 
+rustls-acme = { version = "0.12.1", features = ["axum"], optional = true}
+tokio-stream = { version = "0.1.17", optional = true }
+
 [profile.release]
 debug = false
 lto = true
 codegen-units = 1
 panic = "abort"
+
+[features]
+https = ["dep:rustls-acme", "dep:tokio-stream"]
