@@ -1,4 +1,6 @@
-# The Auxiliary Vector
+<h1 style="border-bottom: 2px solid var(--overlay); margin-bottom: 15px;">Welcome to the Auxiliary Vector 🏗️</h1>
+
+A collection of neurons and synapses flicker to life, within the Laniakea Supercluster. A living catalog of maintained articles, and documentation, has finaly found a reader.
 
 #### 🚧 Work in Progress 🚧
 
