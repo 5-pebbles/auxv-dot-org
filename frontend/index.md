@@ -11,3 +11,4 @@ This website is far from finished, most things don't work yet...
 
 - [Home](/) (You are here)
 - [About](/about)
+- [Resume](/imperial.pdf)
