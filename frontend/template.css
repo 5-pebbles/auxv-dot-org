@@ -151,6 +151,14 @@ blockquote {
   border-left: .25em solid var(--muted);
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+  border-radius: 4px;
+}
+
 /* Top Bar Thing: */
 .top-bar {
   display: flex;
