@@ -9,6 +9,14 @@ This website is far from finished, most things don't work yet...
 
 ## Site Map 📜
 
+#### The Basics
+
 - [Home](/) (You are here)
 - [About](/about)
 - [Resume](/imperial.pdf)
+
+#### Algorithms
+
+- [Unobstructed Rectangle Sweep Line Algorithm](/algorithms/unobstructed_subrectangles/index)
+
+#### 
