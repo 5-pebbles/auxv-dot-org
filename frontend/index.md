@@ -18,5 +18,3 @@ This website is far from finished, most things don't work yet...
 #### Algorithms
 
 - [Unobstructed Rectangle Sweep Line Algorithm](/algorithms/unobstructed_subrectangles/index)
-
-#### 
