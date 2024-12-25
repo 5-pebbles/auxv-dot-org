@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Normal CSS -->
-  <link rel="stylesheet" href="/template.css" />
+  <link rel="stylesheet" href="/assets/templates/template.css" />
   <!-- Load Twitter Emojis: -->
   <style>
     img.emoji {
@@ -16,25 +16,24 @@
       vertical-align: -0.1em;
     }
   </style>
-  <script src="/emoji/twemoji.js"></script>
+  <script src="/assets/emoji/twemoji.js"></script>
   <script>
     window.onload = function () {
       twemoji.parse(document.body,
         {
-          base: "/emoji/",
+          base: "/assets/emoji/",
           folder: 'svg',
           ext: '.svg'
         });
     }
   </script>
   <!-- Load Font (Cascadia Code): -->
-  <link rel="stylesheet" href="/font/cascadia_code.css" />
+  <link rel="stylesheet" href="/assets/font/cascadia_code.css" />
   <!-- Highlight JS -->
-  <link rel="stylesheet" href="/highlight_js/rose-pine.css" />
-  <link rel="stylesheet" href="/highlight_js/rose-pine.css" />
-  <script src="/highlight_js/main.js"></script>
+  <link rel="stylesheet" href="/assets/highlight_js/rose-pine.css" />
+  <script src="/assets/highlight_js/main.js"></script>
   <!-- load additional languages -->
-  <script src="/highlight_js/langs/rust.js"></script>
+  <script src="/assets/highlight_js/langs/rust.js"></script>
   <script>hljs.highlightAll();</script>
 </head>
 

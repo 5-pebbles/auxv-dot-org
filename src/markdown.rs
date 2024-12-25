@@ -3,12 +3,12 @@ use std::path::PathBuf;
 use axum::response::Html;
 use pulldown_cmark::{html, Event, Options, Tag, TagEnd};
 
-use crate::{error::ServerError, ServerResponse};
+use crate::error::ServerError;
 
 pub async fn render_markdown(
     markdown_path: PathBuf,
     liquid_globals: liquid::Object,
-) -> Result<ServerResponse, ServerError> {
+) -> Result<Html<String>, ServerError> {
     // From Markdown to HTML:
     let markdown = tokio::fs::read_to_string(markdown_path).await?;
 
@@ -27,12 +27,12 @@ pub async fn render_markdown(
     html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
 
     // Inline the template and prepare for rendering:
-    let template = include_str!("../frontend/template.html").to_string();
+    let template = include_str!("../assets/templates/template.html").to_string();
 
     let template_parser = liquid::ParserBuilder::with_stdlib().build()?;
     let template = template_parser.parse(&template.replace("{{html}}", &markdown_as_html))?;
     let rendered_html = template.render(&liquid_globals)?;
-    Ok(ServerResponse::Html(Html(rendered_html)))
+    Ok(Html(rendered_html))
 }
 
 fn generate_heading_ids<'a>(parser: impl Iterator<Item = Event<'a>>) -> Vec<Event<'a>> {

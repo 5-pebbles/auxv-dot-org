@@ -1,4 +1,29 @@
 <style>
+#heading {
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--overlay);
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+#title {
+  margin-bottom: 32px;
+}
+
+#profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid var(--iris);
+  margin: 30px
+}
+
+#subtitle {
+  color: var(--subtle);
+}
+
 @media (max-width: 750px) {
   #heading {
     flex-direction: column;
@@ -9,14 +34,14 @@
 }
 </style>
 
-<div id="heading" style="display: flex; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--overlay); margin-bottom: 30px; justify-content: center;">
+<div id="heading">
 
-<img id="profile-picture" src="/images/profile_picture.jpeg" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--iris); margin: 30px; ">
+<img id="profile-picture" src="/assets/images/profile_picture.jpeg" alt="Profile Picture">
 
-<div id="title" style="margin-bottom: 32px;">
+<div id="title">
 
 # Owen Friedman
-<span style="color: var(--subtle);">I am the slugcat, slayer of dragons, eater of bugs.</span>
+<span id="subtitle">I am the slugcat, slayer of dragons, eater of bugs.</span>
 
 </div>
 </div>

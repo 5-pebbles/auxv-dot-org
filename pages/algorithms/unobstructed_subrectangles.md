@@ -20,7 +20,7 @@ There will also be an `opening line` on the first unit of the parent rectangle.
 
 **Take this example:**
 
-![image](./assets/unobstructed_subrectangles-1.svg)
+![image](/assets/algorithms/unobstructed_subrectangles/unobstructed_subrectangles-1.svg)
 
 **The algorithm will draw four lines:**
 
@@ -31,7 +31,7 @@ There will also be an `opening line` on the first unit of the parent rectangle.
 
 Lines before or after the parent rectangle, such as the `closing line` of the last obstruction, are discarded.
 
-![image](./assets/unobstructed_subrectangles-2.svg)
+![image](/assets/algorithms/unobstructed_subrectangles/unobstructed_subrectangles-2.svg)
 
 ## Section 2: Identifying Gaps
 
@@ -45,7 +45,7 @@ It saves a pointer to the bottom of the last obstruction, which starts at the to
 
 **Example of overlapping obstructions:**
 
-![image](./assets/unobstructed_subrectangles-3.svg)
+![image](/assets/algorithms/unobstructed_subrectangles/unobstructed_subrectangles-3.svg)
 
 The outer obstruction is processed first; if the pointer is updated to the inner obstruction, a false gap would be found.
 
@@ -57,11 +57,11 @@ The algorithm maintains a list of active rectangles and a list of completed rect
 
 - `Opening Lines:` For each gap, if not filled by an active rectangle, a new active rectangle is created, starting at the current line with the gap's top and bottom.
 
-![image](./assets/unobstructed_subrectangles-4.svg)
+![image](/assets/algorithms/unobstructed_subrectangles/unobstructed_subrectangles-4.svg)
 
 - `Closing Lines:` For each active rectangle, if it fits within a gap, it continues. Otherwise, it is added to the completed rectangles list, ending one unit before the current line. Partially obstructed rectangles are subdivided into the gaps they contain; the new active rectangles have the same start point as the original.
 
-![image](./assets/unobstructed_subrectangles-5.svg)
+![image](/assets/algorithms/unobstructed_subrectangles/unobstructed_subrectangles-5.svg)
 
 ## Section 4: Finalization
 
@@ -69,7 +69,7 @@ After processing all lines, any remaining active rectangles are added to the com
 
 **In our example, this leaves us with four rectangles:**
 
-![image](./assets/unobstructed_subrectangles-6.svg)
+![image](/assets/algorithms/unobstructed_subrectangles/unobstructed_subrectangles-6.svg)
 
 ## Section 5: Implementation
 

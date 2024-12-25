@@ -1,13 +1,13 @@
 @font-face {
   font-family: "Cascadia Code";
-  src: url("/font/cascadia_code.woff2");
+  src: url("/assets/font/cascadia_code.woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Cascadia Code";
-  src: url("/font/cascadia_code_italic.woff2");
+  src: url("/assets/font/cascadia_code_italic.woff2");
   font-weight: 400;
   font-style: italic;
 }
