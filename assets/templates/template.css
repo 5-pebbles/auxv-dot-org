@@ -90,6 +90,11 @@ code {
   border-radius: 4px;
 }
 
+/* Code Block */
+pre code {
+  line-height: 1.5em;
+}
+
 /* Bullets: */
 ul {
   margin-left: 1rem;
