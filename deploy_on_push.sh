@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# ln -s "$(pwd)/deploy_on_push.sh" .git/hooks/pre-push
+
 
 function build_zip() {
   mkdir "./target/zip"
@@ -32,8 +34,15 @@ function deploy_zip() {
 
 # Format: [user host secret_path]
 declare -a deployments=(
-  "ghostbird auxv.org top_secret_do_not_share/fawn.key"
+  "ghostbird acceptance.auxv.org top_secret_do_not_share/acceptance.key"
 )
+
+
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != "main" ]; then
+  exit 0
+fi
 
 echo "Building zip:"
 rm -r "./target/zip"
@@ -41,7 +50,7 @@ build_zip
 
 for deployment in "${deployments[@]}"; do
   read -r user host secret <<< "$deployment"
-  echo "Deploying to [$user@$host]:"
+  echo -e "\n\nDeploying to [$user@$host]:"
 
   deploy_zip "$user" "$host" "$secret"
   echo "-----------------------------------"
