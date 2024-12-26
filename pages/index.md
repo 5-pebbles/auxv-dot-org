@@ -9,7 +9,6 @@
 
 A collection of neurons and synapses flicker to life, within the Laniakea Supercluster. A living catalog of maintained articles, and documentation, has finaly found a reader.
 
-I am testing ci/cd...
 
 #### 🚧 Work in Progress 🚧
 

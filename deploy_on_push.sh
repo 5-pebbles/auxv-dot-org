@@ -11,7 +11,7 @@ function build_zip() {
   cp -r "./pages" "./target/zip/pages"
   cp -r "./assets" "./target/zip/assets"
 
-  cd "./target/zip" && zip -r "./auxv-dot-org.zip" "." -x "./auxv-dot-org.zip" ; cd "../.."
+  (cd "./target/zip" && zip -r "./auxv-dot-org.zip" "." -x "./auxv-dot-org.zip")
 }
 
 function deploy_zip() {
@@ -24,6 +24,7 @@ function deploy_zip() {
   # sudo to remove ./auxv-dot-org becaues lets_encrypt_cache is root
   ssh -i "$secret_path" "$user@$host" "mkdir ./auxv-dot-org-tmp \
   && unzip ./auxv-dot-org -d ./auxv-dot-org-tmp \
+  && cp -r ./auxv-dot-org/lets_encrypt_cache ./auxv-dot-org-tmp/lets_encrypt_cache \
   && sudo -S rm -r ./auxv-dot-org \
   ; mv ./auxv-dot-org-tmp ./auxv-dot-org \
   && sudo -S systemctl restart auxv-dot-org \
@@ -34,10 +35,11 @@ function deploy_zip() {
 
 # Format: [user host secret_path]
 declare -a deployments=(
-  "ghostbird acceptance.auxv.org top_secret_do_not_share/acceptance.key"
+  "ghostbird auxv.org top_secret_do_not_share/acceptance.key"
 )
 
 
+exec < /dev/tty
 
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" != "main" ]; then
