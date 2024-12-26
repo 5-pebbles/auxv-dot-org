@@ -6,7 +6,6 @@ use tower_http::services::ServeDir;
 
 mod error;
 mod markdown;
-use axum_server::accept::DefaultAcceptor;
 use markdown::render_markdown;
 
 fn liquid_object() -> liquid::Object {
@@ -40,7 +39,8 @@ async fn main() -> Result<(), std::io::Error> {
         .nest_service("/assets", ServeDir::new("./assets"));
 
     #[cfg(not(feature = "https"))]
-    let acceptor = { DefaultAcceptor::new() };
+    let acceptor = { use axum_server::accept::DefaultAcceptor;
+        DefaultAcceptor::new() };
 
     #[cfg(feature = "https")]
     let acceptor = {
