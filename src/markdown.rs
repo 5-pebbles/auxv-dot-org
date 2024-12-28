@@ -1,13 +1,13 @@
 use std::{collections::HashMap, path::Path, sync::OnceLock};
 
-use axum::response::Html;
+use liquid::{ParserBuilder, Template};
 use pulldown_cmark::{html, Event, Options, Tag, TagEnd};
 
-pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Html<String>> {
+pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Template> {
     fn load_pages_recursive(
-        mut pages: HashMap<Box<Path>, Html<String>>,
+        mut pages: HashMap<Box<Path>, Template>,
         directory: &Path,
-    ) -> HashMap<Box<Path>, Html<String>> {
+    ) -> HashMap<Box<Path>, Template> {
         for entry in std::fs::read_dir(directory).unwrap() {
             let entry = entry.unwrap();
 
@@ -63,16 +63,20 @@ pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Html<String>> {
             let title = words.join(" ");
 
             // Inline the template and prepare for rendering:
-            let mut template = include_str!("../assets/templates/template.html").to_string();
-            template = template.replace("{{html}}", &markdown_as_html);
-            template = template.replace("{{title}}", &title);
+            let mut template_content =
+                include_str!("../assets/templates/template.html").to_string();
+            template_content = template_content.replace("{{html}}", &markdown_as_html);
+            template_content = template_content.replace("{{title}}", &title);
 
-            pages.insert(Path::new(unique_path).into(), Html(template));
+            let liquid_parser = ParserBuilder::with_stdlib().build().unwrap();
+            let template = liquid_parser.parse(&template_content).unwrap();
+
+            pages.insert(Path::new(unique_path).into(), template);
         }
         pages
     }
 
-    static HASHMAP: OnceLock<HashMap<Box<Path>, Html<String>>> = OnceLock::new();
+    static HASHMAP: OnceLock<HashMap<Box<Path>, Template>> = OnceLock::new();
     HASHMAP.get_or_init(|| load_pages_recursive(HashMap::new(), Path::new("pages")))
 }
 
