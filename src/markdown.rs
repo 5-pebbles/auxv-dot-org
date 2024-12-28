@@ -45,7 +45,17 @@ pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Template> {
                 .unwrap();
 
             pages.insert(
-                markdown_path.strip_prefix("pages/").unwrap().into(),
+                Path::new(
+                    markdown_path
+                        .into_os_string()
+                        .into_string()
+                        .unwrap()
+                        .strip_prefix("pages/")
+                        .unwrap()
+                        .strip_suffix(".md")
+                        .unwrap(),
+                )
+                .into(),
                 template,
             );
         }

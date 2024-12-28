@@ -12,7 +12,7 @@ use template::render_template;
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     let app = Router::new()
-        .route("/", get(|| async { render_template("index.md").await }))
+        .route("/", get(|| async { render_template("index").await }))
         .route(
             "/*path",
             get(async |request: Request| {
