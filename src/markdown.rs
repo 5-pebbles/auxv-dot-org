@@ -1,13 +1,13 @@
 use std::{collections::HashMap, path::Path, sync::OnceLock};
 
-use liquid::Template;
+use axum::response::Html;
 use pulldown_cmark::{html, Event, Options, Tag, TagEnd};
 
-pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Template> {
+pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Html<String>> {
     fn load_pages_recursive(
-        mut pages: HashMap<Box<Path>, Template>,
+        mut pages: HashMap<Box<Path>, Html<String>>,
         directory: &Path,
-    ) -> HashMap<Box<Path>, Template> {
+    ) -> HashMap<Box<Path>, Html<String>> {
         for entry in std::fs::read_dir(directory).unwrap() {
             let entry = entry.unwrap();
 
@@ -36,33 +36,43 @@ pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Template> {
             let mut markdown_as_html = String::new();
             html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
 
-            // Inline the template and prepare for rendering:
-            let template = include_str!("../assets/templates/template.html").to_string();
-
-            let template_parser = liquid::ParserBuilder::with_stdlib().build().unwrap();
-            let template = template_parser
-                .parse(&template.replace("{{html}}", &markdown_as_html))
+            let tmp = markdown_path.into_os_string().into_string().unwrap();
+            let unique_path = tmp
+                .strip_prefix("pages/")
+                .unwrap()
+                .strip_suffix(".md")
                 .unwrap();
+            let mut words = unique_path
+                .to_string()
+                .split("/")
+                .last()
+                .unwrap()
+                .split(|c| c == '-' || c == '_')
+                .map(|word| {
+                    let mut chars = word.chars();
+                    match chars.next() {
+                        Some(first_char) => {
+                            first_char.to_uppercase().collect::<String>()
+                                + &chars.as_str().to_lowercase()
+                        }
+                        None => String::new(),
+                    }
+                })
+                .collect::<Vec<String>>();
+            words.push(" | Auxv.org".to_string());
+            let title = words.join(" ");
 
-            pages.insert(
-                Path::new(
-                    markdown_path
-                        .into_os_string()
-                        .into_string()
-                        .unwrap()
-                        .strip_prefix("pages/")
-                        .unwrap()
-                        .strip_suffix(".md")
-                        .unwrap(),
-                )
-                .into(),
-                template,
-            );
+            // Inline the template and prepare for rendering:
+            let mut template = include_str!("../assets/templates/template.html").to_string();
+            template = template.replace("{{html}}", &markdown_as_html);
+            template = template.replace("{{title}}", &title);
+
+            pages.insert(Path::new(unique_path).into(), Html(template));
         }
         pages
     }
 
-    static HASHMAP: OnceLock<HashMap<Box<Path>, Template>> = OnceLock::new();
+    static HASHMAP: OnceLock<HashMap<Box<Path>, Html<String>>> = OnceLock::new();
     HASHMAP.get_or_init(|| load_pages_recursive(HashMap::new(), Path::new("pages")))
 }
 
