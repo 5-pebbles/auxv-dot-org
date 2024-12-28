@@ -1,41 +1,62 @@
-use std::path::PathBuf;
+use std::{collections::HashMap, path::Path, sync::OnceLock};
 
-use axum::response::Html;
+use liquid::Template;
 use pulldown_cmark::{html, Event, Options, Tag, TagEnd};
 
-use crate::error::ServerError;
+pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Template> {
+    fn load_pages_recursive(
+        mut pages: HashMap<Box<Path>, Template>,
+        directory: &Path,
+    ) -> HashMap<Box<Path>, Template> {
+        for entry in std::fs::read_dir(directory).unwrap() {
+            let entry = entry.unwrap();
 
-pub async fn render_markdown(
-    markdown_path: PathBuf,
-    liquid_globals: liquid::Object,
-) -> Result<Html<String>, ServerError> {
-    // From Markdown to HTML:
-    let markdown = tokio::fs::read_to_string(markdown_path).await?;
+            let markdown_path = entry.path();
 
-    // Configure markdown parsing options:
-    let markdown_options = Options::empty()
-        | Options::ENABLE_TABLES
-        | Options::ENABLE_STRIKETHROUGH
-        | Options::ENABLE_HEADING_ATTRIBUTES;
+            if markdown_path.is_dir() {
+                pages = load_pages_recursive(pages, &markdown_path);
+                continue;
+            }
 
-    // Parse markdown and add IDs to headings:
-    let markdown_parser =
-        generate_heading_ids(pulldown_cmark::Parser::new_ext(&markdown, markdown_options));
+            let markdown = std::fs::read_to_string(&markdown_path).unwrap();
 
-    // Convert markdown to HTML:
-    let mut markdown_as_html = String::new();
-    html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
+            // Configure markdown parsing options:
+            let markdown_options = Options::empty()
+                | Options::ENABLE_TABLES
+                | Options::ENABLE_STRIKETHROUGH
+                | Options::ENABLE_HEADING_ATTRIBUTES;
 
-    // Inline the template and prepare for rendering:
-    let template = include_str!("../assets/templates/template.html").to_string();
+            // Parse markdown and add IDs to headings:
+            let markdown_parser = generate_heading_slugs(pulldown_cmark::Parser::new_ext(
+                &markdown,
+                markdown_options,
+            ));
 
-    let template_parser = liquid::ParserBuilder::with_stdlib().build()?;
-    let template = template_parser.parse(&template.replace("{{html}}", &markdown_as_html))?;
-    let rendered_html = template.render(&liquid_globals)?;
-    Ok(Html(rendered_html))
+            // Convert markdown to HTML:
+            let mut markdown_as_html = String::new();
+            html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
+
+            // Inline the template and prepare for rendering:
+            let template = include_str!("../assets/templates/template.html").to_string();
+
+            let template_parser = liquid::ParserBuilder::with_stdlib().build().unwrap();
+            let template = template_parser
+                .parse(&template.replace("{{html}}", &markdown_as_html))
+                .unwrap();
+
+            pages.insert(
+                markdown_path.strip_prefix("pages/").unwrap().into(),
+                template,
+            );
+        }
+        pages
+    }
+
+    static HASHMAP: OnceLock<HashMap<Box<Path>, Template>> = OnceLock::new();
+    HASHMAP.get_or_init(|| load_pages_recursive(HashMap::new(), Path::new("pages")))
 }
 
-fn generate_heading_ids<'a>(parser: impl Iterator<Item = Event<'a>>) -> Vec<Event<'a>> {
+fn generate_heading_slugs<'a>(parser: impl Iterator<Item = Event<'a>>) -> Vec<Event<'a>> {
     fn generate_slug(text: &str) -> String {
         text.to_lowercase()
             .chars()

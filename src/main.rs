@@ -1,46 +1,31 @@
 #![feature(async_closure)]
 
 use axum::{extract::Request, routing::get, Router};
-use std::{env::args, path::PathBuf};
+use std::env::args;
 use tower_http::services::ServeDir;
 
 mod error;
 mod markdown;
-use markdown::render_markdown;
-
-fn liquid_object() -> liquid::Object {
-    liquid::object!({
-        "name": "Owen Friedman",
-        "email": "5-pebble@protonmail.com",
-        "phone": "(502) 230-9990",
-        "github": "https://github.com/5-pebbles",
-        "title": "Auxv",
-        "version": env!("CARGO_PKG_VERSION"),
-    })
-}
+mod template;
+use template::render_template;
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     let app = Router::new()
-        .route(
-            "/",
-            get(|| async {
-                render_markdown(PathBuf::from("pages/index.md"), liquid_object()).await
-            }),
-        )
+        .route("/", get(|| async { render_template("index.md").await }))
         .route(
             "/*path",
             get(async |request: Request| {
-                let file_path =
-                    PathBuf::from("pages").join(request.uri().path().trim_start_matches('/'));
-                render_markdown(file_path.with_extension("md"), liquid_object()).await
+                render_template(request.uri().path().trim_start_matches('/')).await
             }),
         )
         .nest_service("/assets", ServeDir::new("./assets"));
 
     #[cfg(not(feature = "https"))]
-    let acceptor = { use axum_server::accept::DefaultAcceptor;
-        DefaultAcceptor::new() };
+    let acceptor = {
+        use axum_server::accept::DefaultAcceptor;
+        DefaultAcceptor::new()
+    };
 
     #[cfg(feature = "https")]
     let acceptor = {
