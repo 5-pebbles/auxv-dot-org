@@ -10,6 +10,7 @@ function build_zip() {
   cp "./target/x86_64-unknown-linux-musl/release/auxv-dot-org" "./target/zip/auxv-dot-org"
   cp -r "./pages" "./target/zip/pages"
   cp -r "./assets" "./target/zip/assets"
+  cp -r "./emojis" "./target/zip/emojis"
 
   (cd "./target/zip" && zip -r "./auxv-dot-org.zip" "." -x "./auxv-dot-org.zip")
 }

@@ -1,26 +1,25 @@
 #![feature(async_closure)]
 
 use axum::{extract::Request, routing::get, Router};
-use markdown::markdown_template_cache;
 use std::env::args;
 use tower_http::services::ServeDir;
 
 mod error;
 mod markdown;
-mod template;
-use template::render_template;
+mod pages;
+use pages::{fetch_page, page_cache};
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     // Catch any error's and avoid a cold start:
-    let _ = markdown_template_cache();
+    let _ = page_cache();
 
     let app = Router::new()
-        .route("/", get(|| async { render_template("index").await }))
+        .route("/", get(|| async { fetch_page("index").await }))
         .route(
             "/*path",
             get(async |request: Request| {
-                render_template(request.uri().path().trim_start_matches('/')).await
+                fetch_page(request.uri().path().trim_start_matches('/')).await
             }),
         )
         .nest_service("/assets", ServeDir::new("./assets"));

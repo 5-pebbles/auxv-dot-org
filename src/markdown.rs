@@ -1,27 +1,14 @@
 use std::{
-    collections::HashMap,
     fs::{read_dir, read_to_string},
     path::{Path, PathBuf},
-    sync::OnceLock,
 };
 
-use liquid::{ParserBuilder, Template};
 use pulldown_cmark::{html, Event, Options, Parser, Tag, TagEnd};
+use twemoji::TwemojiParser;
 
-use crate::error::ServerError;
+use crate::{error::ServerError, pages::TemplateCache};
 
-type TemplateCache = HashMap<Box<Path>, Template>;
-
-static TEMPLATE_CACHE: OnceLock<TemplateCache> = OnceLock::new();
-
-pub fn markdown_template_cache() -> &'static TemplateCache {
-    TEMPLATE_CACHE.get_or_init(|| {
-        load_pages_recursive(HashMap::new(), Path::new("pages"))
-            .expect("Failed to initialize template cache")
-    })
-}
-
-fn load_pages_recursive(
+pub fn load_pages_recursive(
     mut pages: TemplateCache,
     directory: &Path,
 ) -> Result<TemplateCache, ServerError> {
@@ -42,7 +29,7 @@ fn load_pages_recursive(
     Ok(pages)
 }
 
-fn process_markdown_file(path: &Path) -> Result<Option<Template>, ServerError> {
+fn process_markdown_file(path: &Path) -> Result<Option<String>, ServerError> {
     if !path.extension().map_or(false, |ext| ext == "md") {
         return Ok(None);
     }
@@ -55,19 +42,16 @@ fn process_markdown_file(path: &Path) -> Result<Option<Template>, ServerError> {
         | Options::ENABLE_HEADING_ATTRIBUTES;
 
     let markdown_parser = generate_heading_slugs(Parser::new_ext(&markdown, markdown_options));
-    let mut html_output = String::new();
-    html::push_html(&mut html_output, markdown_parser.into_iter());
+    let mut html_content = String::new();
+    html::push_html(&mut html_content, markdown_parser.into_iter());
 
     let title = generate_page_title(path)?;
-    let template_content = generate_template_content(&html_output, &title);
+    let html_content = generate_html_content(&html_content, &title);
 
-    let liquid_parser = ParserBuilder::with_stdlib()
-        .build()
-        .expect("Failed to build liquid parser");
+    let mut emoji_parser = TwemojiParser::inline_from_local_file(PathBuf::from("emojis"));
+    let emoji_substitute_content = emoji_parser.parse(&html_content);
 
-    let template = liquid_parser.parse(&template_content)?;
-
-    Ok(Some(template))
+    Ok(Some(emoji_substitute_content))
 }
 
 fn generate_key_path(path: &Path) -> Result<PathBuf, ServerError> {
@@ -105,7 +89,7 @@ fn generate_page_title(path: &Path) -> Result<String, ServerError> {
     Ok(format!("{} | Auxv.org", words.join(" ")))
 }
 
-fn generate_template_content(html_content: &str, title: &str) -> String {
+fn generate_html_content(html_content: &str, title: &str) -> String {
     let template = include_str!("../assets/templates/template.html");
     template
         .replace("{{html}}", html_content)
