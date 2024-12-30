@@ -6,6 +6,7 @@ use axum::{http::StatusCode, response::IntoResponse};
 pub enum ServerError {
     IoError(tokio::io::Error),
     LiquidError(liquid::Error),
+    BadRequest(String),
     NotFound(PathBuf),
 }
 
@@ -18,7 +19,12 @@ impl IntoResponse for ServerError {
             Self::LiquidError(error) => {
                 (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()).into_response()
             }
-            Self::NotFound(path) => (StatusCode::NOT_FOUND, "404".to_string()).into_response(),
+            Self::BadRequest(message) => (StatusCode::BAD_REQUEST, message).into_response(),
+            Self::NotFound(path) => (
+                StatusCode::NOT_FOUND,
+                format!("File not found: {:#?}", path),
+            )
+                .into_response(),
         }
     }
 }

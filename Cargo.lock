@@ -224,6 +224,7 @@ dependencies = [
  "tokio-stream",
  "tower 0.5.2",
  "tower-http",
+ "twemoji",
 ]
 
 [[package]]
@@ -2012,6 +2013,11 @@ checksum = "e672c95779cf947c5311f83787af4fa8fffd12fb27e4993211a84bdfd9610f9c"
 dependencies = [
  "once_cell",
 ]
+
+[[package]]
+name = "twemoji"
+version = "0.1.0"
+source = "git+https://github.com/5-pebbles/twemoji.git#0c336dad2974e43c1e185d85025daa41238de768"
 
 [[package]]
 name = "typenum"

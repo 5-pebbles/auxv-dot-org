@@ -1,83 +1,115 @@
-use std::{collections::HashMap, path::Path, sync::OnceLock};
+use std::{
+    collections::HashMap,
+    fs::{read_dir, read_to_string},
+    path::{Path, PathBuf},
+    sync::OnceLock,
+};
 
 use liquid::{ParserBuilder, Template};
-use pulldown_cmark::{html, Event, Options, Tag, TagEnd};
+use pulldown_cmark::{html, Event, Options, Parser, Tag, TagEnd};
 
-pub fn markdown_template_cache() -> &'static HashMap<Box<Path>, Template> {
-    fn load_pages_recursive(
-        mut pages: HashMap<Box<Path>, Template>,
-        directory: &Path,
-    ) -> HashMap<Box<Path>, Template> {
-        for entry in std::fs::read_dir(directory).unwrap() {
-            let entry = entry.unwrap();
+use crate::error::ServerError;
 
-            let markdown_path = entry.path();
+type TemplateCache = HashMap<Box<Path>, Template>;
 
-            if markdown_path.is_dir() {
-                pages = load_pages_recursive(pages, &markdown_path);
-                continue;
-            }
+static TEMPLATE_CACHE: OnceLock<TemplateCache> = OnceLock::new();
 
-            let markdown = std::fs::read_to_string(&markdown_path).unwrap();
+pub fn markdown_template_cache() -> &'static TemplateCache {
+    TEMPLATE_CACHE.get_or_init(|| {
+        load_pages_recursive(HashMap::new(), Path::new("pages"))
+            .expect("Failed to initialize template cache")
+    })
+}
 
-            // Configure markdown parsing options:
-            let markdown_options = Options::empty()
-                | Options::ENABLE_TABLES
-                | Options::ENABLE_STRIKETHROUGH
-                | Options::ENABLE_HEADING_ATTRIBUTES;
+fn load_pages_recursive(
+    mut pages: TemplateCache,
+    directory: &Path,
+) -> Result<TemplateCache, ServerError> {
+    for entry in read_dir(directory)? {
+        let entry = entry?;
+        let path = entry.path();
 
-            // Parse markdown and add IDs to headings:
-            let markdown_parser = generate_heading_slugs(pulldown_cmark::Parser::new_ext(
-                &markdown,
-                markdown_options,
-            ));
-
-            // Convert markdown to HTML:
-            let mut markdown_as_html = String::new();
-            html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
-
-            let tmp = markdown_path.into_os_string().into_string().unwrap();
-            let unique_path = tmp
-                .strip_prefix("pages/")
-                .unwrap()
-                .strip_suffix(".md")
-                .unwrap();
-            let mut words = unique_path
-                .to_string()
-                .split("/")
-                .last()
-                .unwrap()
-                .split(|c| c == '-' || c == '_')
-                .map(|word| {
-                    let mut chars = word.chars();
-                    match chars.next() {
-                        Some(first_char) => {
-                            first_char.to_uppercase().collect::<String>()
-                                + &chars.as_str().to_lowercase()
-                        }
-                        None => String::new(),
-                    }
-                })
-                .collect::<Vec<String>>();
-            words.push(" | Auxv.org".to_string());
-            let title = words.join(" ");
-
-            // Inline the template and prepare for rendering:
-            let mut template_content =
-                include_str!("../assets/templates/template.html").to_string();
-            template_content = template_content.replace("{{html}}", &markdown_as_html);
-            template_content = template_content.replace("{{title}}", &title);
-
-            let liquid_parser = ParserBuilder::with_stdlib().build().unwrap();
-            let template = liquid_parser.parse(&template_content).unwrap();
-
-            pages.insert(Path::new(unique_path).into(), template);
+        if path.is_dir() {
+            pages = load_pages_recursive(pages, &path)?;
+            continue;
         }
-        pages
+
+        if let Some(template) = process_markdown_file(&path)? {
+            let key_path = generate_key_path(&path)?;
+            pages.insert(key_path.into_boxed_path(), template);
+        }
+    }
+    Ok(pages)
+}
+
+fn process_markdown_file(path: &Path) -> Result<Option<Template>, ServerError> {
+    if !path.extension().map_or(false, |ext| ext == "md") {
+        return Ok(None);
     }
 
-    static HASHMAP: OnceLock<HashMap<Box<Path>, Template>> = OnceLock::new();
-    HASHMAP.get_or_init(|| load_pages_recursive(HashMap::new(), Path::new("pages")))
+    let markdown = read_to_string(path).map_err(|_| ServerError::NotFound(path.to_path_buf()))?;
+
+    let markdown_options = Options::empty()
+        | Options::ENABLE_TABLES
+        | Options::ENABLE_STRIKETHROUGH
+        | Options::ENABLE_HEADING_ATTRIBUTES;
+
+    let markdown_parser = generate_heading_slugs(Parser::new_ext(&markdown, markdown_options));
+    let mut html_output = String::new();
+    html::push_html(&mut html_output, markdown_parser.into_iter());
+
+    let title = generate_page_title(path)?;
+    let template_content = generate_template_content(&html_output, &title);
+
+    let liquid_parser = ParserBuilder::with_stdlib()
+        .build()
+        .expect("Failed to build liquid parser");
+
+    let template = liquid_parser.parse(&template_content)?;
+
+    Ok(Some(template))
+}
+
+fn generate_key_path(path: &Path) -> Result<PathBuf, ServerError> {
+    let path_str = path
+        .to_str()
+        .ok_or_else(|| ServerError::BadRequest("Invalid path encoding".to_string()))?
+        .strip_prefix("pages/")
+        .expect("Path must be under 'pages' directory")
+        .strip_suffix(".md")
+        .expect("File must have .md extension");
+
+    Ok(PathBuf::from(path_str))
+}
+
+fn generate_page_title(path: &Path) -> Result<String, ServerError> {
+    let filename = path
+        .file_stem()
+        .ok_or_else(|| ServerError::BadRequest("Failed to get file name".to_string()))?
+        .to_str()
+        .ok_or_else(|| ServerError::BadRequest("Invalid file name encoding".to_string()))?;
+
+    let words: Vec<String> = filename
+        .split(|c| c == '-' || c == '_')
+        .map(|word| {
+            let mut chars = word.chars();
+            match chars.next() {
+                Some(first_char) => {
+                    first_char.to_uppercase().collect::<String>() + &chars.as_str().to_lowercase()
+                }
+                None => String::new(),
+            }
+        })
+        .collect();
+
+    Ok(format!("{} | Auxv.org", words.join(" ")))
+}
+
+fn generate_template_content(html_content: &str, title: &str) -> String {
+    let template = include_str!("../assets/templates/template.html");
+    template
+        .replace("{{html}}", html_content)
+        .replace("{{title}}", title)
 }
 
 fn generate_heading_slugs<'a>(parser: impl Iterator<Item = Event<'a>>) -> Vec<Event<'a>> {
