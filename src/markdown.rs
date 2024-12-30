@@ -21,9 +21,9 @@ pub fn load_pages_recursive(
             continue;
         }
 
-        if let Some(template) = process_markdown_file(&path)? {
+        if let Some(content) = process_markdown_file(&path)? {
             let key_path = generate_key_path(&path)?;
-            pages.insert(key_path.into_boxed_path(), template);
+            pages.insert(key_path.into_boxed_path(), content.into_boxed_str());
         }
     }
     Ok(pages)

@@ -7,7 +7,7 @@ use std::{
 
 use crate::{error::ServerError, markdown::load_pages_recursive};
 
-pub type TemplateCache = HashMap<Box<Path>, String>;
+pub type TemplateCache = HashMap<Box<Path>, Box<str>>;
 
 static TEMPLATE_CACHE: OnceLock<TemplateCache> = OnceLock::new();
 
@@ -18,9 +18,9 @@ pub fn page_cache() -> &'static TemplateCache {
     })
 }
 
-pub async fn fetch_page(template_path: &str) -> Result<Html<String>, ServerError> {
+pub async fn fetch_page(template_path: &str) -> Result<Html<&'static str>, ServerError> {
     page_cache()
         .get(Path::new(template_path))
-        .map(|p| Html(p.clone()))
+        .map(|p| Html(p.as_ref()))
         .ok_or_else(|| ServerError::NotFound(PathBuf::new().join(template_path)))
 }
