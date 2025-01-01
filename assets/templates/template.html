@@ -17,7 +17,7 @@
   <script src="/assets/highlight_js/langs/rust.js"></script>
   <script>hljs.highlightAll();</script>
   <style>
-    .overlay {
+    #overlay {
       backdrop-filter: blur(5px);
 
       position: absolute;
@@ -27,7 +27,7 @@
       left: 0;
     }
 
-    .overlay-menu {
+    #overlay-menu {
       margin-top: 13vh;
       margin-inline: auto;
       max-width: 700px;
@@ -42,23 +42,23 @@
     }
 
     @media (max-width: 700px) {
-      .overlay-menu {
+      #overlay-menu {
         border-radius: 0;
       }
     }
 
-    .overlay-search {
+    #overlay-search-container {
       flex-direction: row;
     }
 
-    .overlay-search {
+    #overlay-search-container {
       padding-inline: 14px;
       padding-top: 16px;
       padding-bottom: 12px;
       border-bottom: 3px solid var(--surface);
     }
 
-    .overlay-input {
+    #overlay-search-input {
       background: transparent;
       border: none;
       color: var(--text);
@@ -69,7 +69,7 @@
       height: 100%;
     }
 
-    .overlay-exit {
+    #overlay-exit {
       color: var(--love);
       font-weight: bold;
 
@@ -83,13 +83,13 @@
       cursor: pointer;
     }
 
-    .overlay-result {
+    #overlay-results {
       display: flex;
       flex-direction: column;
       overflow-y: auto;
     }
 
-    .overlay-result a {
+    #overlay-results a {
       padding: 8px 16px;
       color: var(--text);
       text-decoration: none;
@@ -101,24 +101,24 @@
       align-items: center;
     }
 
-    .overlay-result a:hover {
+    #overlay-results a:hover {
       background-color: var(--highlight-low);
       border-left-color: var(--love);
     }
 
-    .result-main {
+    .overlay-result-main {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
 
-    .result-title {
+    .overlay-result-title {
       color: var(--love);
       font-weight: 500;
       font-size: 0.95em;
     }
 
-    .result-preview {
+    .overlay-result-preview {
       color: var(--muted);
       font-size: 0.85em;
       white-space: nowrap;
@@ -126,7 +126,7 @@
       text-overflow: ellipsis;
     }
 
-    .result-path {
+    .overlay-result-path {
       color: var(--subtle);
       font-size: 0.8em;
       opacity: 0.7;
@@ -136,153 +136,16 @@
 </head>
 
 <body>
-  <div class="overlay">
-    <div class="overlay-menu">
-      <div class="overlay-search">
-        <input type="text" class="overlay-input" placeholder="Search markdown pages with regex...">
-        <button class="overlay-exit">ESC</button>
+  <div id="overlay">
+    <div id="overlay-menu">
+      <div id="overlay-search-container">
+        <input id="overlay-search-input" type="text" placeholder="Search markdown pages with regex...">
+        <button id="overlay-exit" onclick="hideOverlay()">ESC</button>
       </div>
-      <nav class="overlay-result">
-        <a href="/index">
-          <div class="result-main">
-            <span class="result-title">Home and Site Map</span>
-            <span class="result-preview">A collection of neurons and synapses flicker to life, within...</span>
-          </div>
-          <span class="result-path">path/index.md</span>
-        </a>
-
+      <nav id="overlay-results">
       </nav>
     </div>
   </div>
-  <script>
-  // Get overlay element
-const overlay = document.querySelector('.overlay');
-const exitButton = document.querySelector('.overlay-exit');
-const searchInput = document.querySelector('.overlay-input');
-
-// Function to toggle overlay
-function showOverlay() {
-  overlay.style.display = 'block';
-  searchInput.focus(); // Auto-focus the search input
-}
-
-function hideOverlay() {
-  overlay.style.display = 'none';
-  searchInput.value = ''; // Clear the search input when closing
-}
-
-// Handle keyboard events
-document.addEventListener('keydown', (e) => {
-  // Only trigger 's' shortcut if not typing in an input/textarea
-  if (e.key === 's' && 
-      !e.ctrlKey && 
-      !e.metaKey && 
-      document.activeElement.tagName !== 'INPUT' && 
-      document.activeElement.tagName !== 'TEXTAREA') {
-    e.preventDefault(); // Prevent 's' from being typed
-    showOverlay();
-  }
-  
-  // Close on escape
-  if (e.key === 'Escape') {
-    hideOverlay();
-  }
-});
-
-// Also handle the exit button click
-exitButton.addEventListener('click', hideOverlay);
-
-// Initially hide the overlay
-hideOverlay();
-  </script>
-  <script>
-  // Debounce function to limit API calls while typing
-function debounce(func, wait) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
-}
-
-// Get DOM elements
-// const searchInput = document.querySelector('.overlay-input');
-const resultsNav = document.querySelector('.overlay-result');
-// const exitButton = document.querySelector('.overlay-exit');
-
-// Create result item HTML
-function createResultHTML(result) {
-  const relativePath = result.path.replace(/^pages\//, '');
-  return `
-    <a href="/${relativePath.replace('.md', '')}">
-      <div class="result-main">
-        <span class="result-title">${escapeHtml(result.title)}</span>
-        <span class="result-preview">${escapeHtml(result.short)}</span>
-      </div>
-      <span class="result-path">${escapeHtml(result.path)}</span>
-    </a>
-  `;
-}
-
-// Escape HTML to prevent XSS
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-// Update search results
-async function updateSearch(query) {
-  try {
-    if (!query.trim()) {
-      resultsNav.innerHTML = ''; // Clear results if query is empty
-      return;
-    }
-
-    const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
-    if (!response.ok) throw new Error('Search failed');
-    
-    const results = await response.json();
-    resultsNav.innerHTML = results
-      .map(createResultHTML)
-      .join('');
-    
-  } catch (error) {
-    console.error('Search error:', error);
-    resultsNav.innerHTML = `
-      <div style="padding: 1rem; color: var(--love);">
-        Search failed. Please try again.
-      </div>
-    `;
-  }
-}
-
-// Debounced search function to avoid too many API calls
-const debouncedSearch = debounce(updateSearch, 300);
-
-// Event listeners
-searchInput.addEventListener('input', (e) => {
-  debouncedSearch(e.target.value);
-});
-
-// Handle escape key and exit button
-function closeOverlay() {
-  document.querySelector('.overlay').style.display = 'none';
-}
-
-exitButton.addEventListener('click', closeOverlay);
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeOverlay();
-});
-
-// Focus search input when overlay opens
-document.querySelector('.overlay').addEventListener('show', () => {
-  searchInput.focus();
-});
-  </script>
   <div class="container">
     <div class="content">
       <div class="top-bar">
@@ -306,6 +169,9 @@ document.querySelector('.overlay').addEventListener('show', () => {
       {{html}}
     </div>
   </div>
+  
+  <!-- Normal JS -->
+  <script src="/assets/templates/template.js"></script>
 </body>
 
 </html>

@@ -14,7 +14,7 @@ pub struct SearchQuery {
 #[derive(Serialize)]
 pub struct SearchResult {
     title: &'static str,
-    path: &'static str,
+    url: &'static str,
     short: &'static str,
 }
 
@@ -28,7 +28,7 @@ pub async fn search(
             .filter(|p| p.title.contains(&query) || p.raw_text.contains(&query))
             .map(|p| SearchResult {
                 title: p.title,
-                path: p.path,
+                url: p.url,
                 short: p.short,
             })
             .collect(),

@@ -14,7 +14,7 @@ pub struct MarkdownPage {
     pub short: &'static str,
     pub markdown: &'static str,
     pub raw_text: &'static str,
-    pub path: &'static str,
+    pub url: &'static str,
 }
 
 pub fn load_markdown_recursive(
@@ -40,18 +40,25 @@ pub fn load_markdown_recursive(
         let mut short_content = raw_text[0..min(raw_text.len(), SHORT_LEN)].to_string();
         short_content.push_str("...");
         let short = Box::leak(short_content.into_boxed_str());
+        // TODO: This is leaking more space then we need:
         let path = Box::leak(
             path.into_os_string()
                 .into_string()
                 .unwrap()
                 .into_boxed_str(),
         );
+        let url = path
+            .strip_prefix("pages/")
+            .unwrap()
+            .strip_suffix(".md")
+            .unwrap();
+
         let markdown_page = MarkdownPage {
             title,
             short,
             markdown,
             raw_text,
-            path,
+            url,
         };
         pages.push(markdown_page);
     }

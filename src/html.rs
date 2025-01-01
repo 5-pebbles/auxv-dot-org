@@ -18,7 +18,7 @@ pub fn render_html(
     for MarkdownPage {
         title,
         markdown: text,
-        path,
+        url,
         ..
     } in markdown_pages
     {
@@ -41,12 +41,6 @@ pub fn render_html(
         let emoji_substitute_content = emoji_parser.parse(&html_content);
 
         let static_html = Box::leak(emoji_substitute_content.into_boxed_str());
-
-        let url = path
-            .strip_prefix("pages/")
-            .unwrap()
-            .strip_suffix(".md")
-            .unwrap();
 
         html.insert(url, static_html);
     }
