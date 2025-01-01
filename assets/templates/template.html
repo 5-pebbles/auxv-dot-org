@@ -99,10 +99,14 @@
       border-left: 4px solid transparent;
       transition: all 0.2s ease;
       align-items: center;
+      outline: none;
     }
 
     #overlay-results a:hover {
-      background-color: var(--highlight-low);
+      border-left-color: var(--love);
+    }
+
+    #overlay-results a.selected {
       border-left-color: var(--love);
     }
 

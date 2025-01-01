@@ -3,41 +3,76 @@ const exitButton = document.getElementById('overlay-exit');
 const searchInput = document.getElementById('overlay-search-input');
 const resultsNav = document.getElementById('overlay-results');
 
+// Track currently selected result
+let selectedIndex = -1;
 
-// Functions to toggle overlay:
 function showOverlay() {
   overlay.style.display = 'block';
-  searchInput.focus(); // Auto-focus the search input
+  searchInput.focus();
+  selectedIndex = -1;
 }
 
 function hideOverlay() {
   overlay.style.display = 'none';
-  searchInput.value = ''; // Clear the search input when closing
+  searchInput.value = '';
+  selectedIndex = -1;
 }
 
-// Start with the Overlay hidden:
+// Start with the Overlay hidden
 hideOverlay();
 
+function handleKeyNavigation(e) {
+  const results = resultsNav.querySelectorAll('a');
+  if (!results.length) return;
 
-// Handle keyboard events:
+  // Handle tab navigation
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    
+    if (e.shiftKey) {
+      // Shift+Tab: Move up
+      selectedIndex = selectedIndex <= 0 ? results.length - 1 : selectedIndex - 1;
+    } else {
+      // Tab: Move down
+      selectedIndex = selectedIndex >= results.length - 1 ? 0 : selectedIndex + 1;
+    }
+    
+    results[selectedIndex].focus();
+    updateSelectionStyles(results);
+  }
+  
+  // Handle enter to navigate
+  if (e.key === 'Enter' && selectedIndex !== -1) {
+    results[selectedIndex].click();
+  }
+}
+
+function updateSelectionStyles(results) {
+  results.forEach((result, index) => {
+    result.classList.toggle('selected', index === selectedIndex);
+  });
+}
+
+// Handle keyboard events
 document.addEventListener('keydown', (e) => {
-  // Open on `s`:
   if (e.key === 's' && 
       !e.ctrlKey && 
       !e.metaKey && 
       document.activeElement.tagName !== 'INPUT' && 
       document.activeElement.tagName !== 'TEXTAREA') {
-    e.preventDefault(); // Prevent this 's' from being typed.
+    e.preventDefault();
     showOverlay();
   }
   
-  // Close on `escape`:
   if (e.key === 'Escape') {
     hideOverlay();
   }
+  
+  if (overlay.style.display === 'block') {
+    handleKeyNavigation(e);
+  }
 });
 
-// Debounce function to limit API calls while typing:
 function debounce(func, wait) {
   let timeout;
   return function (...args) {
@@ -46,10 +81,9 @@ function debounce(func, wait) {
   };
 }
 
-// Create result item HTML:
 function createResultHTML(result) {
   return `
-    <a href="/${result.url}">
+    <a href="/${result.url}" tabindex="0">
       <div class="overlay-result-main">
         <span class="overlay-result-title">${result.title}</span>
         <span class="overlay-result-preview">${result.short}</span>
@@ -59,11 +93,10 @@ function createResultHTML(result) {
   `;
 }
 
-// Update search results:
 async function updateSearch(query) {
   try {
     if (!query.trim()) {
-      resultsNav.innerHTML = ''; // Clear results if query is empty.
+      resultsNav.innerHTML = '';
       return;
     }
 
@@ -71,9 +104,8 @@ async function updateSearch(query) {
     if (!response.ok) throw new Error('Search failed');
     
     const results = await response.json();
-    resultsNav.innerHTML = results
-      .map(createResultHTML)
-      .join('');
+    resultsNav.innerHTML = results.map(createResultHTML).join('');
+    selectedIndex = -1;
     
   } catch (error) {
     console.error('Search error:', error);
@@ -85,10 +117,8 @@ async function updateSearch(query) {
   }
 }
 
-// Debounced search function to avoid too many API calls:
 const debouncedSearch = debounce(updateSearch, 300);
 
-// Add search event listeners:
 searchInput.addEventListener('input', (e) => {
   debouncedSearch(e.target.value);
 });
