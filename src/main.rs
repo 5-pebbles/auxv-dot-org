@@ -1,27 +1,29 @@
 #![feature(async_closure)]
 
 use axum::{extract::Request, routing::get, Router};
-use std::env::args;
+use error::StartError;
+use state::ServerState;
+use std::{env::args, sync::Arc};
 use tower_http::services::ServeDir;
 
 mod error;
+mod html;
 mod markdown;
-mod pages;
-use pages::{fetch_page, page_cache};
+
+mod render;
+mod search;
+mod state;
 
 #[tokio::main]
-async fn main() -> Result<(), std::io::Error> {
+async fn main() -> Result<(), StartError> {
     // Catch any error's and avoid a cold start:
-    let _ = page_cache();
+    let state = ServerState::new()?;
 
     let app = Router::new()
-        .route("/", get(|| async { fetch_page("index").await }))
-        .route(
-            "/*path",
-            get(async |request: Request| {
-                fetch_page(request.uri().path().trim_start_matches('/')).await
-            }),
-        )
+        .route("/", get(render::index))
+        .route("/*path", get(render::render))
+        .route("/search", get(search::search))
+        .with_state(state)
         .nest_service("/assets", ServeDir::new("./assets"));
 
     #[cfg(not(feature = "https"))]
@@ -70,5 +72,7 @@ async fn main() -> Result<(), std::io::Error> {
     axum_server::bind(address)
         .acceptor(acceptor)
         .serve(app.into_make_service())
-        .await
+        .await?;
+
+    Ok(())
 }
