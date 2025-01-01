@@ -25,7 +25,7 @@ pub async fn search(
     Json(
         searchable
             .iter()
-            .filter(|p| p.title.contains(&query) || p.text.contains(&query))
+            .filter(|p| p.title.contains(&query) || p.raw_text.contains(&query))
             .map(|p| SearchResult {
                 title: p.title,
                 path: p.path,

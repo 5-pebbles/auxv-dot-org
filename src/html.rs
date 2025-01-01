@@ -16,7 +16,10 @@ pub fn render_html(
     let mut html: HashMap<&'static str, &'static str> = HashMap::new();
 
     for MarkdownPage {
-        title, text, path, ..
+        title,
+        markdown: text,
+        path,
+        ..
     } in markdown_pages
     {
         let markdown_options = Options::empty()

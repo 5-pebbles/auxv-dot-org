@@ -12,7 +12,8 @@ const SHORT_LEN: usize = 50;
 pub struct MarkdownPage {
     pub title: &'static str,
     pub short: &'static str,
-    pub text: &'static str,
+    pub markdown: &'static str,
+    pub raw_text: &'static str,
     pub path: &'static str,
 }
 
@@ -34,8 +35,11 @@ pub fn load_markdown_recursive(
         };
 
         let title = Box::leak(generate_markdown_title(&path)?.into_boxed_str());
-        let short = "This part of the site does not work yet...";
-        let text = Box::leak(content.into_boxed_str());
+        let markdown = Box::leak(content.into_boxed_str());
+        let raw_text = Box::leak(md_to_text::convert(&markdown).into_boxed_str());
+        let mut short_content = raw_text[0..min(raw_text.len(), SHORT_LEN)].to_string();
+        short_content.push_str("...");
+        let short = Box::leak(short_content.into_boxed_str());
         let path = Box::leak(
             path.into_os_string()
                 .into_string()
@@ -45,7 +49,8 @@ pub fn load_markdown_recursive(
         let markdown_page = MarkdownPage {
             title,
             short,
-            text,
+            markdown,
+            raw_text,
             path,
         };
         pages.push(markdown_page);
