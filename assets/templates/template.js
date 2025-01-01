@@ -88,7 +88,9 @@ function createResultHTML(result) {
         <span class="overlay-result-title">${result.title}</span>
         <span class="overlay-result-preview">${result.short}</span>
       </div>
-      <span class="overlay-result-path">/${result.url}</span>
+      <div class="overlay-result-path-container">
+        <span class="overlay-result-path">${result.url}/</span>
+      </div>
     </a>
   `;
 }

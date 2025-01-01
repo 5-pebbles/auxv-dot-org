@@ -16,134 +16,13 @@
   <!-- load additional languages -->
   <script src="/assets/highlight_js/langs/rust.js"></script>
   <script>hljs.highlightAll();</script>
-  <style>
-    #overlay {
-      backdrop-filter: blur(5px);
-
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
-    }
-
-    #overlay-menu {
-      margin-top: 13vh;
-      margin-inline: auto;
-      max-width: 700px;
-      height: 70vh;
-      opacity: 0.97;
-
-      background-color: var(--overlay);
-      border-radius: 15px;
-
-      display: flex;
-      flex-direction: column;
-    }
-
-    @media (max-width: 700px) {
-      #overlay-menu {
-        border-radius: 0;
-      }
-    }
-
-    #overlay-search-container {
-      flex-direction: row;
-    }
-
-    #overlay-search-container {
-      padding-inline: 14px;
-      padding-top: 16px;
-      padding-bottom: 12px;
-      border-bottom: 3px solid var(--surface);
-    }
-
-    #overlay-search-input {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      outline: none;
-      width: 90%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      height: 100%;
-    }
-
-    #overlay-exit {
-      color: var(--love);
-      font-weight: bold;
-
-      background: var(--surface);
-
-      display: inline-flex;
-      align-items: center;
-      border: none;
-      padding: 0.5rem 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    #overlay-results {
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    #overlay-results a {
-      padding: 8px 16px;
-      color: var(--text);
-      text-decoration: none;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      border-left: 4px solid transparent;
-      transition: all 0.2s ease;
-      align-items: center;
-      outline: none;
-    }
-
-    #overlay-results a:hover {
-      border-left-color: var(--love);
-    }
-
-    #overlay-results a.selected {
-      border-left-color: var(--love);
-    }
-
-    .overlay-result-main {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .overlay-result-title {
-      color: var(--love);
-      font-weight: 500;
-      font-size: 0.95em;
-    }
-
-    .overlay-result-preview {
-      color: var(--muted);
-      font-size: 0.85em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .overlay-result-path {
-      color: var(--subtle);
-      font-size: 0.8em;
-      opacity: 0.7;
-      font-family: ui-monospace, monospace;
-    }
-  </style>
 </head>
 
 <body>
   <div id="overlay">
     <div id="overlay-menu">
       <div id="overlay-search-container">
-        <input id="overlay-search-input" type="text" placeholder="Search markdown pages with regex...">
+        <input id="overlay-search-input" type="text" placeholder="Search by content, title, and url...">
         <button id="overlay-exit" onclick="hideOverlay()">ESC</button>
       </div>
       <nav id="overlay-results">
