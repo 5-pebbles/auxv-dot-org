@@ -45,6 +45,14 @@ exec < /dev/tty
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" != "main" ]; then
   exit 0
+elif ! git diff --quiet; then
+    echo "Error: You have unstaged changes."
+    echo "Please stage or stash your changes before deploying."
+    exit 1
+elif ! git diff --cached --quiet; then
+    echo "Error: You have staged but uncommitted changes."
+    echo "Please commit your changes before deploying."
+    exit 1
 fi
 
 echo "Building zip:"
