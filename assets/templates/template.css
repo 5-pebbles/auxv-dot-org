@@ -22,7 +22,7 @@ body {
   font-size: 1.1rem;
   background-color: var(--base);
   color: var(--text);
-  line-height: 1.8;
+  line-height: 2rem;
 }
 
 .container {
@@ -43,11 +43,12 @@ body {
 
 /* Headers: */
 :is(h1, h2, h3, h4, h5, h6) {
-  margin-top: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 :is(h1, h2, h3, h4) + :is(h1, h2, h3, h4) {
-  margin-top: 0;
+  margin-top: 0.5rem;
 }
 
 h1:first-of-type {
@@ -83,9 +84,8 @@ h5 {
 code {
   color: var(--gold);
   background: var(--base);
-  line-height: 2.5em;
-  padding-inline: 0.8rem;
-  padding-block: 0.3rem;
+  padding-inline: 0.6rem;
+  padding-block: 0.2rem;
   border-radius: 4px;
 }
 
@@ -99,9 +99,13 @@ ul {
   margin-left: 1rem;
 }
 
-li {
+ul > li {
   list-style-type: '-';
   padding-inline-start: 1ch;
+}
+
+ol > li {
+  margin-inline-start: 3ch;
 }
 
 /* Tables: */

@@ -18,9 +18,6 @@ function hideOverlay() {
   selectedIndex = -1;
 }
 
-// Start with the Overlay hidden
-hideOverlay();
-
 function handleKeyNavigation(e) {
   const results = resultsNav.querySelectorAll('a');
   if (!results.length) return;

@@ -61,9 +61,7 @@ This is my website where I can whisper into the void about the things that fasci
 
 ## Skills 🍣
 
-`Rust` `Lua` `C` `Python` `C#` `SQL` `Java`
-
-`Linux` `Git` `Docker` `Google Sheets` `Model Editors`
+`Rust` `Linux` `Git` `Lua` `C` `Zig` `Python` `C#` `SQL` `Java` `Docker` `Google Sheets`
 
 
 ## Inventory 📦
