@@ -1842,7 +1842,7 @@ dependencies = [
 [[package]]
 name = "twemoji"
 version = "0.1.0"
-source = "git+https://github.com/5-pebbles/twemoji.git#7da4d0e60dac66d20f851d191a0150c51fdcb7dd"
+source = "git+https://github.com/5-pebbles/twemoji.git#27900e70bbd7fa17e33a25ec3d86dd846d17a24c"
 
 [[package]]
 name = "unicase"

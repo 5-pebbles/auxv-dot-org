@@ -98,7 +98,7 @@ It requires some fancy features only available in the night version of rust, whi
 <br/>
 
 The `#![feature(naked_functions)]` enables a nightly feature for your project and should be placed at the top of `src/main.rs`. 
-A naked function disables the usual function prologue/epilogue handling, leaving argument and return management to the developer it only includes the Assembly defined within the `naked_asm` macro. All naked functions must be marked `unsafe` and `extern "C"`. We will get to the `extern "C"` part later.
+A naked function disables the usual function prologue/epilogue handling, leaving argument and return management to the developer. It only includes the Assembly defined within the `naked_asm` macro. All naked functions must be marked `unsafe` and `extern "C"`. We will get to the `extern "C"` part later.
 
 The attribute macro `#[naked]` just marks the following function naked.
 

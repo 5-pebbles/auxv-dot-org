@@ -11,7 +11,7 @@ tokio = { version = "1.42.0", features = ["full"] }
 tower = "0.5.2"
 tower-http = { version = "0.6.2", features = ["fs"] }
 
-rustls-acme = { version = "0.12.1", features = ["axum"], optional = true}
+rustls-acme = { version = "0.12.1", features = ["axum"], optional = true }
 tokio-stream = { version = "0.1.17", optional = true }
 twemoji = { git = "https://github.com/5-pebbles/twemoji.git" }
 serde = { version = "1.0.217", features = ["derive"] }
