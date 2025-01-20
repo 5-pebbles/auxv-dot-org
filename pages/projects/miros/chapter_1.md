@@ -1,6 +1,6 @@
 # Chapter 1: Where to `_start`
 
-As part of my ongoing campaign to convince the world I am worthy of an entry level position. I am writing a dynamic linker from scratch in **Rust**.
+As part of my ongoing campaign to convince the world I am worthy of an entry level position, I am writing a dynamic linker from scratch in **Rust**.
 
 <br/>
 
@@ -14,11 +14,11 @@ The binaries on your computer aren't just raw instructions, they are stored in a
 
 <br/>
 
-Just like in high-level programming languages, the `Elf` format uses libraries and imports. The names of these so-called shared libraries are stored in the `PT_DYNAMIC` section and are referred to as shared objects. When the program starts, the dynamic linker finds these dependencies and loads them from a file into the same address space as the main program. Then using another set of data structures in the `PT_DYNAMIC` section called relocations, it updates all calls to these functions with their new addresses.
+Just like in high-level programming languages, the `Elf` format uses libraries and imports. The names of these so-called shared libraries are stored in the `PT_DYNAMIC` section and are referred to as shared objects. When the program starts, the dynamic linker finds these dependencies and loads them from a file into the same address space as the main program. Then, using another set of data structures in the `PT_DYNAMIC` section called relocations, it updates all calls to these functions with their new addresses.
 
 <br/>
 
-While statically linked binaries have become more popular lately, they too have relocations requiring a dynamic linker to resolve at runtime. This is part of a system called `ASLR` which stands for address space layout randomization. `ASLR` randomly arrange the address space including the positions of the base executable, stack, heap, and any shared objects. Then the dynamic linker updates all addresses using the base address (B) plus an offset into the executable called the addend (A) thus allowing the executable to locate its own functions and variables.
+While statically linked binaries have become more popular lately, they too have relocations requiring a dynamic linker to resolve at runtime. This is part of a system called `ASLR`, which stands for address space layout randomization. `ASLR` randomly arrange the address space including the positions of the base executable, stack, heap, and any shared objects. Then, the dynamic linker updates all addresses using the base address (B) plus an offset into the executable called the addend (A). This allows the executable to locate its own functions and variables.
 
 <br/>
 
@@ -27,11 +27,11 @@ As far as I know, the only alternatives to this is a program that acts as its ow
 
 ## Now Let's Begin
 
-As you can guess, the dynamic linker is one of those executables that relocates itself. Actually, the default dynamic linker `ld.so` is completely dynamic, linking its own libraries at runtime. I am not going to be doing that, it's a lot of work and **Rust** crates are always statically linked anyways.
+As you can guess, the dynamic linker is one of those executables that relocates itself. Actually, the default dynamic linker `ld.so` is completely dynamic, linking its own libraries at runtime. I am not going to be doing that; it's a lot of work and **Rust** crates are always statically linked, anyway.
 
 <br/>
 
-If you have done any low-level work, you are familiar with the `_start` symbol. It's part of `crt0` or **C** runtime zero, and in a normal **Rust** program it is the first code to run:
+If you have done any low-level work, you are familiar with the `_start` symbol. It's part of `crt0` or **C** runtime zero. In a normal **Rust** program it is the first code to run:
 
 ```
 // [_start:c] -> [main:c] -> [start:rust] -> [main:rust] <┐
@@ -39,7 +39,7 @@ If you have done any low-level work, you are familiar with the `_start` symbol. 
 // This is the function a developer writes. --------------┘
 ```
 
-The symbol `_start` is in fact arbitrary, the actual entry point is defined in the `Elf` headers `e_entry` field. The dynamic linker or the Linux kernel (in cases without a linker) will jump to that address to start execution.
+The symbol `_start` is in fact arbitrary, the actual entry point is defined in the `Elf` headers `e_entry` field. The dynamic linker, or the Linux kernel (in cases without a linker), will jump to that address to start execution.
 
 You can view the address of the entry point using the `readelf` command with the `-h` argument:
 ```
@@ -95,13 +95,13 @@ pub unsafe extern "C" fn _start() -> ! {
 }
 ```
 
-This creates a label `_start` which calls the function `relocate_and_calculate_jump_address` with stack pointer as an argument. Then it jumps to the address returned by that function.
+This creates a label `_start`, which calls the function `relocate_and_calculate_jump_address` with stack pointer as an argument. Then, it jumps to the address returned by that function.
 It requires some fancy features only available in the night version of rust, which you can enable for the current project using the following command: `rustup override set nightly`.
 
 <br/>
 
 The `#![feature(naked_functions)]` enables a nightly feature for your project and should be placed at the top of `src/main.rs`. 
-A naked function disables the usual prologue/epilogue, leaving argument and return value handling to the developer. All naked functions must be marked `unsafe` and `extern "C"`, and only include the Assembly defined within the `naked_asm` macro. We will get to the `extern "C"` part later.
+A naked function disables the usual prologue/epilogue, leaving argument and return value handling to the developer. All naked functions must be marked `unsafe` and `extern "C"`. They only include the Assembly defined within the `naked_asm` macro. We will get to the `extern "C"` part later.
 
 <br/>
 
@@ -109,7 +109,7 @@ The `#![no_main]` attribute macro tells the compiler that, yes, we know what we 
 
 <br/>
 
-A function like `main` would normally be **mangled** to something like `_ZN5miros4main17h7f8645e8adf41fc7E`, to avoid conflicts when linking crates together. The attribute macro `#[no_mangle]` tells the compiler to let the identifier maintain its original name.
+A function like `main` would normally be **mangled** to something like `_ZN5miros4main17h7f8645e8adf41fc7E`, to avoid conflicts while linking together crates. The attribute macro `#[no_mangle]` tells the compiler to let the identifier maintain its original name.
 
 <br/>
 
@@ -139,19 +139,19 @@ naked_asm!("movq %rsp, %rdi",
 
 ## Abstract Binary Interface
 
-An ABI or abstract binary interface defines how program modules and functions communicate. I have two devices, and both fall under the [System V ABI - AMD64 Architecture Processor Supplement](https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf).
+An ABI, or abstract binary interface, defines how program modules and functions communicate. I have two devices, and both fall under the [System V ABI - AMD64 Architecture Processor Supplement](https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf).
 
 <br/>
 
-While I recommend reading the entire ABI for your architecture (a few times) the only important parts here (at least on `x86_64`) are:
+While I recommend reading the entire ABI for your architecture (a few times), the only important parts here (at least on `x86_64`) are:
 1. Integer arguments are passed in the `rdi`, `rsi`, `rdx`, `rcx`, `r8` and `r9` registers.
-2. The stack must be 16-byte aligned, if you forget this part, like I did, your program will segfault on any misaligned `movaps`.
+2. The stack must be 16-byte aligned. If you forget this part, like I did, your program will segfault on any misaligned `movaps`.
 3. If two or fewer integers are returned, they are passed in the `rax` and `rdx` registers.
 
 
 <br/>
 
-We can tell **Rust** code to follow an ABI using the `extern` keyword, for example defining a function with `extern "C"` means it will use the ABI we just described.
+We can tell **Rust** code to follow an ABI using the `extern` keyword. For example, defining a function with `extern "C"` means it will use the ABI we just described.
 
 <br/>
 
@@ -164,7 +164,7 @@ pub unsafe extern "C" fn relocate_and_calculate_jump_address(stack_pointer: *mut
 
 This function will assume the stack is 16-byte aligned and expect its first argument to be in `rdi`. It will then return a `usize` via the `rax` register.
 
-Now we have called **Rust** code from our `_start`... And yes this will of course segfault, when `_start` jumps to 0, but that can be fixed in the next chapter.
+Now we have called **Rust** code from our `_start`... And yes, this will of course segfault, when `_start` jumps to 0. But, that can be fixed in the next chapter.
 
 <br/>
 
