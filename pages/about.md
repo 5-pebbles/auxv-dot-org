@@ -36,7 +36,7 @@
 
 <div id="heading">
 
-<img id="profile-picture" src="/assets/images/profile_picture.jpeg" alt="Profile Picture">
+<img id="profile-picture" src="/images/profile_picture.jpeg" alt="Profile Picture">
 
 <div id="title">
 

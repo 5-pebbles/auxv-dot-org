@@ -1,27 +1,20 @@
 [package]
 name = "auxv-dot-org"
-version = "0.1.0"
-edition = "2021"
+version = "0.2.0"
+edition = "2024"
 
 [dependencies]
-axum = "0.7.9"
-axum-server = "0.7.1"
+either = "1.13.0"
+log = "0.4.25"
 pulldown-cmark = "0.12.2"
-tokio = { version = "1.42.0", features = ["full"] }
-tower = "0.5.2"
-tower-http = { version = "0.6.2", features = ["fs"] }
-
-rustls-acme = { version = "0.12.1", features = ["axum"], optional = true }
-tokio-stream = { version = "0.1.17", optional = true }
-twemoji = { git = "https://github.com/5-pebbles/twemoji.git" }
-serde = { version = "1.0.217", features = ["derive"] }
-md_to_text = "0.0.0"
-
-[profile.release]
-debug = false
-lto = true
-codegen-units = 1
-panic = "abort"
+rocket = { git = "https://github.com/rwf2/Rocket.git", features = ["json"] }
+rustls-acme = { version = "0.12.1", features = ["ring", "tokio"] }
+tokio = { version = "1.43.0", features = ["net"] }
+tokio-rustls = "0.26.1"
+tokio-stream = { version = "0.1.17", features = ["net"] }
+tokio-util = { version = "0.7.13", features = ["compat"] }
+twemoji = { git = "https://github.com/5-pebbles/twemoji.git", version = "0.1.0" }
 
 [features]
-https = ["dep:rustls-acme", "dep:tokio-stream"]
+default = []
+https = ["rocket/tls"]

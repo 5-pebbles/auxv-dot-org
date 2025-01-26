@@ -21,7 +21,7 @@ This website is far from finished, most things don't work yet...
 
 - [Home](/) (You are here)
 - [About](/about)
-- [Resume](/assets/resume/imperial.pdf)
+- [Resume](/resume/imperial.pdf)
 
 #### Projects
 

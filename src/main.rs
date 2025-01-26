@@ -1,78 +1,107 @@
-#![feature(async_closure)]
+#[macro_use]
+extern crate rocket;
 
-use axum::{extract::Request, routing::get, Router};
-use error::StartError;
-use state::ServerState;
-use std::{env::args, sync::Arc};
-use tower_http::services::ServeDir;
+use std::path::{Path, PathBuf};
 
-mod error;
-mod html;
-mod markdown;
+use either::Either;
+use rocket::{
+    fs::NamedFile,
+    response::content::RawHtml,
+    serde::{Serialize, json::Json},
+    tokio::{self},
+};
 
-mod render;
-mod search;
-mod state;
+use crate::pages::PAGE_CACHE_DIR;
+
+#[cfg(feature = "https")]
+mod lets_encrypt_listener;
+
+mod pages;
+
+#[get("/")]
+async fn index() -> RawHtml<&'static str> {
+    pages::get_page_cache()
+        .get(Path::new("index"))
+        .cloned()
+        .map(RawHtml)
+        .unwrap()
+}
+
+#[get("/<path..>")]
+async fn html_or_file(path: PathBuf) -> Option<Either<RawHtml<&'static str>, NamedFile>> {
+    if path.extension().is_some() {
+        NamedFile::open(Path::new(PAGE_CACHE_DIR).join(path))
+            .await
+            .ok()
+            .map(Either::Right)
+    } else {
+        pages::get_page_cache()
+            .get(path.as_path())
+            .cloned()
+            .map(RawHtml)
+            .map(Either::Left)
+    }
+}
+
+#[derive(Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct QueryMatch {
+    title: &'static str,
+    path: String,
+    matched: &'static str,
+}
+#[get("/search?<query>")]
+async fn search(query: &str) -> Json<Vec<QueryMatch>> {
+    let query_matches = pages::get_page_cache()
+        .into_iter()
+        .filter_map(|(path, html)| {
+            if !path.to_string_lossy().contains(query) && !html.contains(query) {
+                return None;
+            }
+            let title = html
+                .find("<title>")
+                .and_then(|i| {
+                    html[i..]
+                        .find("</title>")
+                        .map(|j| html[i + 7..i + j].trim())
+                })
+                .unwrap_or_else(|| path.to_str().unwrap_or("Untitled"));
+
+            Some(QueryMatch {
+                title,
+                path: path.to_string_lossy().to_string(),
+                matched: "todo",
+            })
+        })
+        .collect();
+
+    Json(query_matches)
+}
+
+#[catch(404)]
+fn not_found() -> RawHtml<&'static str> {
+    pages::get_page_cache()
+        .get(Path::new("404"))
+        .cloned()
+        .map(RawHtml)
+        .unwrap_or_else(|| RawHtml("404 - Page not found"))
+}
 
 #[tokio::main]
-async fn main() -> Result<(), StartError> {
-    // Catch any error's and avoid a cold start:
-    let state = ServerState::new()?;
+async fn main() {
+    pages::set_page_cache(Path::new(PAGE_CACHE_DIR)).unwrap();
 
-    let app = Router::new()
-        .route("/", get(render::index))
-        .route("/*path", get(render::render))
-        .route("/search", get(search::search))
-        .with_state(state)
-        .nest_service("/assets", ServeDir::new("./assets"));
+    let server = rocket::build()
+        .mount("/", routes![index, html_or_file, search])
+        .register("/", catchers![not_found]);
+    #[cfg(feature = "https")]
+    {
+        let lets_encrypt_listener = lets_encrypt_listener::LetsEncryptListener::new().await;
+        server.launch_on(lets_encrypt_listener).await.unwrap();
+    }
 
     #[cfg(not(feature = "https"))]
-    let acceptor = {
-        use axum_server::accept::DefaultAcceptor;
-        DefaultAcceptor::new()
-    };
-
-    #[cfg(feature = "https")]
-    let acceptor = {
-        use rustls_acme::{caches::DirCache, AcmeConfig};
-        use tokio_stream::StreamExt;
-        // Enable TLS via Let's Encrypt:
-        let mut state = AcmeConfig::new(vec!["auxv.org"])
-            .contact(vec!["mailto:5-pebble@protonmail.com"])
-            .cache_option(Some(DirCache::new("lets_encrypt_cache")))
-            .directory_lets_encrypt(true)
-            .state();
-
-        let tmp = state.axum_acceptor(state.default_rustls_config());
-        tokio::spawn(async move {
-            loop {
-                match state.next().await.unwrap() {
-                    Ok(ok) => println!("Acme Event: {:?}", ok),
-                    Err(err) => println!("Acme Error: {:?}", err),
-                }
-            }
-        });
-
-        tmp
-    };
-
-    let address = args()
-        .nth(1)
-        .unwrap_or_else(|| {
-            if cfg!(feature = "https") {
-                "0.0.0.0:443"
-            } else {
-                "0.0.0.0:80"
-            }
-            .to_string()
-        })
-        .parse()
-        .expect("You sure are a dumb ass... I couldn't parse that address.");
-
-    axum_server::bind(address)
-        .acceptor(acceptor)
-        .serve(app.into_make_service())
-        .await?;
-
-    Ok(())
+    {
+        server.launch().await.unwrap();
+    }
 }
