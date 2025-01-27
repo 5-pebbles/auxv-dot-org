@@ -1,79 +1,52 @@
-use std::{net::Ipv6Addr, sync::Arc};
-
-use rocket::{listener::Listener, tls::TlsStream};
-use rustls_acme::{
-    AcmeConfig, caches::DirCache, futures_rustls::rustls::ServerConfig, is_tls_alpn_challenge,
-};
-use tokio::{
-    io::AsyncWriteExt,
-    net::{TcpListener, TcpStream},
-};
-use tokio_rustls::LazyConfigAcceptor;
-use tokio_stream::StreamExt;
-
-pub struct LetsEncryptListener {
-    listener: TcpListener,
-    default_rustls_config: Arc<ServerConfig>,
-    challenge_rustls_config: Arc<ServerConfig>,
-}
+pub struct LetsEncryptListener(
+    tokio::sync::Mutex<
+        rustls_acme::tokio::TokioIncoming<
+            tokio_util::compat::Compat<tokio::net::TcpStream>,
+            std::io::Error,
+            rustls_acme::tokio::TokioIncomingTcpWrapper<
+                tokio::net::TcpStream,
+                std::io::Error,
+                tokio_stream::wrappers::TcpListenerStream,
+            >,
+            std::io::Error,
+            std::io::Error,
+        >,
+    >,
+);
 
 impl LetsEncryptListener {
     pub async fn new() -> Self {
-        // Enable TLS via Let's Encrypt:
-        let mut state = AcmeConfig::new(vec!["auxv.org"])
-            .contact(vec!["mailto:5-pebble@protonmail.com"])
-            .cache_option(Some(DirCache::new("lets_encrypt_cache")))
-            .directory_lets_encrypt(true)
-            .state();
-        let challenge_rustls_config = state.challenge_rustls_config();
-        let default_rustls_config = state.default_rustls_config();
-
-        tokio::spawn(async move {
-            loop {
-                match state.next().await.unwrap() {
-                    Ok(ok) => log::info!("event: {:?}", ok),
-                    Err(err) => log::error!("error: {:?}", err),
-                }
-            }
-        });
-
-        let listener = TcpListener::bind((Ipv6Addr::UNSPECIFIED, 443))
+        let tcp_listener = tokio::net::TcpListener::bind((std::net::Ipv6Addr::UNSPECIFIED, 443))
             .await
             .unwrap();
+        let tcp_incoming = tokio_stream::wrappers::TcpListenerStream::new(tcp_listener);
+        let incoming = tokio::sync::Mutex::new(
+            rustls_acme::AcmeConfig::new(vec!["auxv.org"])
+                .contact(vec!["mailto:5-pebble@protonmail.com"])
+                .cache_option(Some(rustls_acme::caches::DirCache::new(
+                    "lets_encrypt_cache",
+                )))
+                .directory_lets_encrypt(true)
+                .tokio_incoming(tcp_incoming, Vec::new()),
+        );
 
-        Self {
-            listener,
-            default_rustls_config,
-            challenge_rustls_config,
-        }
+        Self(incoming)
     }
 }
 
-impl Listener for LetsEncryptListener {
-    type Accept = TlsStream<TcpStream>;
+impl rocket::listener::Listener for LetsEncryptListener {
+    type Accept = LetsEncryptConnection;
 
     type Connection = Self::Accept;
 
     async fn accept(&self) -> std::io::Result<Self::Accept> {
-        loop {
-            let (tcp, _) = self.listener.accept().await.unwrap();
-            let start_handshake = LazyConfigAcceptor::new(Default::default(), tcp)
-                .await
-                .unwrap();
-
-            if is_tls_alpn_challenge(&start_handshake.client_hello()) {
-                log::info!("received TLS-ALPN-01 validation request");
-                let mut tls = start_handshake
-                    .into_stream(self.challenge_rustls_config.clone())
-                    .await
-                    .unwrap();
-                tls.shutdown().await.unwrap();
-            } else {
-                return start_handshake
-                    .into_stream(self.default_rustls_config.clone())
-                    .await;
-            }
-        }
+        self.0
+            .lock()
+            .await
+            .next()
+            .await
+            .unwrap()
+            .map(LetsEncryptConnection)
     }
 
     async fn connect(&self, accept: Self::Accept) -> std::io::Result<Self::Connection> {
@@ -81,6 +54,56 @@ impl Listener for LetsEncryptListener {
     }
 
     fn endpoint(&self) -> std::io::Result<rocket::listener::Endpoint> {
-        Ok(rocket::listener::Endpoint::Tcp(self.listener.local_addr()?))
+        Ok(rocket::listener::Endpoint::Tcp(std::net::SocketAddr::from(
+            (std::net::Ipv6Addr::UNSPECIFIED, 443),
+        )))
+    }
+}
+
+pub struct LetsEncryptConnection(
+    tokio_util::compat::Compat<
+        rustls_acme::futures_rustls::server::TlsStream<
+            tokio_util::compat::Compat<tokio::net::TcpStream>,
+        >,
+    >,
+);
+
+impl tokio::io::AsyncWrite for LetsEncryptConnection {
+    fn poll_write(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+        buf: &[u8],
+    ) -> std::task::Poll<Result<usize, std::io::Error>> {
+        std::pin::Pin::new(&mut self.get_mut().0).poll_write(cx, buf)
+    }
+    fn poll_flush(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Result<(), std::io::Error>> {
+        std::pin::Pin::new(&mut self.get_mut().0).poll_flush(cx)
+    }
+    fn poll_shutdown(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Result<(), std::io::Error>> {
+        std::pin::Pin::new(&mut self.get_mut().0).poll_shutdown(cx)
+    }
+}
+
+impl tokio::io::AsyncRead for LetsEncryptConnection {
+    fn poll_read(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+        buf: &mut tokio::io::ReadBuf<'_>,
+    ) -> std::task::Poll<Result<(), std::io::Error>> {
+        std::pin::Pin::new(&mut self.get_mut().0).poll_read(cx, buf)
+    }
+}
+
+impl rocket::listener::Connection for LetsEncryptConnection {
+    fn endpoint(&self) -> std::io::Result<rocket::listener::Endpoint> {
+        Ok(rocket::listener::Endpoint::Tcp(std::net::SocketAddr::from(
+            (std::net::Ipv6Addr::UNSPECIFIED, 443),
+        )))
     }
 }

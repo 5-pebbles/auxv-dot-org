@@ -8,7 +8,6 @@ use rocket::{
     fs::NamedFile,
     response::content::RawHtml,
     serde::{Serialize, json::Json},
-    tokio::{self},
 };
 
 use crate::pages::PAGE_CACHE_DIR;
@@ -87,7 +86,7 @@ fn not_found() -> RawHtml<&'static str> {
         .unwrap_or_else(|| RawHtml("404 - Page not found"))
 }
 
-#[tokio::main]
+#[rocket::main]
 async fn main() {
     pages::set_page_cache(Path::new(PAGE_CACHE_DIR)).unwrap();
 
