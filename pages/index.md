@@ -10,11 +10,6 @@
 A collection of neurons and synapses flicker to life, within the Laniakea Supercluster. A living catalog of articles, documentation, and accumulated knowledge has finally found a reader.
 
 
-#### 🚧 Work in Progress 🚧
-
-This website is far from finished, most things don't work yet...
-
-
 ## Site Map 📜
 
 #### The Basics
@@ -24,6 +19,10 @@ This website is far from finished, most things don't work yet...
 - [Resume](/resume/imperial.pdf)
 
 #### Projects
+
+**Auxv-Dot-Org 🧠🗃️**
+> Yes, this is a self-referential blog... whatcha gonna do about it?
+- [Automated SSL CERTS via Let's Encrypt's TLS-ALPN-01 ACME challenge in Rocket 🔐⬆️⬇️](projects/auxv-dot-org/lets_encrypt_acme)
 
 **Miros 🌸🌿**
 > A modern ELF interpreter (dynamic linker/loader) written in Rust.

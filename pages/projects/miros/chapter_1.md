@@ -4,7 +4,7 @@ As part of my ongoing campaign to convince the world I am worthy of an entry lev
 
 <br/>
 
-It's turning out to be a lot harder than I thought (go figure), but that's mostly do to a lack of documentation.
+It's turning out to be a lot harder than I thought (go figure), but that's mostly due to a lack of documentation.
 This series is my attempt to fix that, it's solely aimed at Linux because I have no idea how Windows works...
 
 

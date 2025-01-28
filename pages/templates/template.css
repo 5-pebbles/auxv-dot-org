@@ -291,6 +291,7 @@ img:not(.emoji) {
   .top-bar {
     flex-direction: column;
     align-items: stretch;
+    padding: 0;
   }
 
   .search-container {

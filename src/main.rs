@@ -90,17 +90,30 @@ fn not_found() -> RawHtml<&'static str> {
 async fn main() {
     pages::set_page_cache(Path::new(PAGE_CACHE_DIR)).unwrap();
 
-    let server = rocket::build()
+    let rocket = rocket::build()
         .mount("/", routes![index, html_or_file, search])
         .register("/", catchers![not_found]);
+
     #[cfg(feature = "https")]
     {
-        let lets_encrypt_listener = lets_encrypt_listener::LetsEncryptListener::new().await;
-        server.launch_on(lets_encrypt_listener).await.unwrap();
-    }
+        use std::net::Ipv4Addr;
 
+        use lets_encrypt_listener::LetsEncryptListener;
+        use rustls_acme::{AcmeConfig, caches::DirCache};
+        use tokio::net::TcpListener;
+
+        let tcp_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, 443))
+            .await
+            .unwrap();
+        let acme_config = AcmeConfig::new(["auxv.org"])
+            .contact(["mailto:5-pebble@protonmail.com"])
+            .cache_option(Some(DirCache::new("lets_encrypt_cache")))
+            .directory_lets_encrypt(true);
+        let https_listener = LetsEncryptListener::new(acme_config, tcp_listener).await;
+        rocket.launch_on(https_listener).await.unwrap();
+    }
     #[cfg(not(feature = "https"))]
     {
-        server.launch().await.unwrap();
+        rocket.launch().await.unwrap();
     }
 }
