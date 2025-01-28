@@ -1,13 +1,17 @@
 #[macro_use]
 extern crate rocket;
 
-use std::path::{Path, PathBuf};
+use std::{
+    net::Ipv4Addr,
+    path::{Path, PathBuf},
+};
 
 use either::Either;
 use rocket::{
     fs::NamedFile,
     response::content::RawHtml,
     serde::{Serialize, json::Json},
+    tokio::net::TcpListener,
 };
 
 use crate::pages::PAGE_CACHE_DIR;
@@ -94,14 +98,45 @@ async fn main() {
         .mount("/", routes![index, html_or_file, search])
         .register("/", catchers![not_found]);
 
+    #[cfg(not(feature = "https"))]
+    {
+        let tcp_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, 80))
+            .await
+            .unwrap();
+        rocket.launch_on(tcp_listener).await.unwrap();
+    }
+
     #[cfg(feature = "https")]
     {
-        use std::net::Ipv4Addr;
-
         use lets_encrypt_listener::LetsEncryptListener;
         use rustls_acme::{AcmeConfig, caches::DirCache};
-        use tokio::net::TcpListener;
+        use tokio::{
+            io::{AsyncReadExt, AsyncWriteExt},
+            net::TcpListener,
+        };
 
+        // HTTP Listener for redirection:
+        let http_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, 80))
+            .await
+            .unwrap();
+        tokio::spawn(async move {
+            loop {
+                if let Ok((mut socket, _)) = http_listener.accept().await {
+                    tokio::spawn(async move {
+                        let mut buf = [0; 1024];
+                        if socket.read(&mut buf).await.is_ok() {
+                            // Simple HTTP 301 redirect response
+                            let response = "HTTP/1.1 301 Moved Permanently\r\n\
+                                          Location: https://auxv.org\r\n\
+                                          Connection: close\r\n\r\n";
+                            let _ = socket.write_all(response.as_bytes()).await;
+                        }
+                    });
+                }
+            }
+        });
+
+        // Enable HTTPS via Let's Encrypt:
         let tcp_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, 443))
             .await
             .unwrap();
@@ -111,9 +146,5 @@ async fn main() {
             .directory_lets_encrypt(true);
         let https_listener = LetsEncryptListener::new(acme_config, tcp_listener).await;
         rocket.launch_on(https_listener).await.unwrap();
-    }
-    #[cfg(not(feature = "https"))]
-    {
-        rocket.launch().await.unwrap();
     }
 }
