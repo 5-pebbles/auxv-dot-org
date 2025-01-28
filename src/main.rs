@@ -11,7 +11,6 @@ use rocket::{
     fs::NamedFile,
     response::content::RawHtml,
     serde::{Serialize, json::Json},
-    tokio::net::TcpListener,
 };
 
 use crate::pages::PAGE_CACHE_DIR;
@@ -100,6 +99,8 @@ async fn main() {
 
     #[cfg(not(feature = "https"))]
     {
+        use tokio::net::TcpListener;
+
         let tcp_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, 80))
             .await
             .unwrap();
