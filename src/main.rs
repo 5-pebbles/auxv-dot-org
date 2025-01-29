@@ -99,7 +99,7 @@ async fn main() {
 
     #[cfg(not(feature = "https"))]
     {
-        use tokio::net::TcpListener;
+        use rocket::listener::tcp::TcpListener;
 
         let tcp_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, 80))
             .await
