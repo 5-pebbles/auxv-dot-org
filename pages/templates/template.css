@@ -449,8 +449,12 @@ img:not(.emoji) {
   text-overflow: ellipsis;
 }
 
+.overlay-result-preview b {
+  color: var(--foam);
+}
+
 .overlay-result-path-container {
-  max-width: 30ch;
+  max-width: 22ch;
   overflow: hidden;
 }
 
