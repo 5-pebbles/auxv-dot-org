@@ -22,7 +22,7 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 
 **Auxv-Dot-Org 🧠🗃️**
 > Yes, this is a self-referential blog... whatcha gonna do about it?
-- [Automated SSL CERTS via Let's Encrypt's TLS-ALPN-01 ACME challenge in Rocket 🔐⬆️⬇️](projects/auxv-dot-org/lets_encrypt_acme)
+- [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](projects/auxv-dot-org/lets_encrypt_acme)
 
 **Miros 🌸🌿**
 > A modern ELF interpreter (dynamic linker/loader) written in Rust.

@@ -6,6 +6,16 @@ After building this entire dang website with `axum`, I had the sudden realizatio
 
 The migration was surprisingly smooth sailing(⛵) that is until I started setting up `https`. The `axum` server used `rustls-acme` and **Let's Encrypt** to automatically renew and verify my SSL certificates. 
 
+<br/>
+<details>
+<summary><b>Table of Contents:</b></summary>
+
+- [How Let's Encrypt Works 🔐⬆️⬇️](#how-lets-encrypt-works)
+- [The Discoveries 🧪](#the-discoveries)
+- [Copy and Past(e | a) 🍝](#copy-and-paste--a)
+
+</details>
+
 
 ### How Let's Encrypt Works 🔐⬆️⬇️
 
