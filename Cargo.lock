@@ -290,6 +290,7 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 name = "auxv-dot-org"
 version = "0.2.0"
 dependencies = [
+ "aho-corasick",
  "clap",
  "either",
  "log",
@@ -300,7 +301,6 @@ dependencies = [
  "tokio-rustls",
  "tokio-stream",
  "tokio-util",
- "twemoji",
 ]
 
 [[package]]
@@ -2544,11 +2544,6 @@ dependencies = [
  "tracing-core",
  "tracing-log",
 ]
-
-[[package]]
-name = "twemoji"
-version = "0.1.0"
-source = "git+https://github.com/5-pebbles/twemoji.git#27900e70bbd7fa17e33a25ec3d86dd846d17a24c"
 
 [[package]]
 name = "ubyte"

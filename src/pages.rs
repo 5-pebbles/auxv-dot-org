@@ -1,14 +1,15 @@
 #![allow(static_mut_refs)]
 
 use std::{
-    collections::HashMap,
+    collections::{HashMap, VecDeque},
     fs::{read_dir, read_to_string},
     mem::MaybeUninit,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 use pulldown_cmark::{Event, Options, Parser, Tag, TagEnd};
-use twemoji::TwemojiParser;
+
+use crate::emojis::EmojiParser;
 
 pub const PAGE_CACHE_DIR: &Path = unsafe { std::mem::transmute("./pages") };
 static mut PAGE_CACHE: MaybeUninit<HashMap<&'static Path, &'static str>> = MaybeUninit::uninit();
@@ -17,65 +18,76 @@ pub fn get_page_cache() -> &'static HashMap<&'static Path, &'static str> {
     unsafe { PAGE_CACHE.assume_init_ref() }
 }
 
-pub fn set_page_cache(directory: &Path) -> Result<(), std::io::Error> {
+pub fn set_page_cache() -> Result<(), std::io::Error> {
+    fn walk_dir_paths(
+        directory: impl AsRef<Path>,
+    ) -> std::io::Result<impl Iterator<Item = std::io::Result<PathBuf>>> {
+        let mut queue = VecDeque::new();
+        queue.extend(read_dir(directory)?);
+
+        Ok(std::iter::from_fn(move || {
+            while let Some(entry) = queue.pop_front() {
+                let path = match entry {
+                    Ok(v) => v.path(),
+                    Err(e) => return Some(Err(e)),
+                };
+                if path.is_dir() {
+                    queue.extend(match read_dir(path) {
+                        Ok(v) => v,
+                        Err(e) => return Some(Err(e)),
+                    });
+                    continue;
+                }
+                return Some(Ok(path));
+            }
+            None
+        }))
+    }
+
+    let template = read_to_string(Path::new(PAGE_CACHE_DIR).join("templates/template.html"))?;
+    let emoji_parser = EmojiParser::new(Path::new(PAGE_CACHE_DIR).join("emojis"))?;
+    let markdown_options = Options::empty()
+        | Options::ENABLE_TABLES
+        | Options::ENABLE_STRIKETHROUGH
+        | Options::ENABLE_HEADING_ATTRIBUTES;
+
+    let pages = walk_dir_paths(PAGE_CACHE_DIR)
+        .unwrap()
+        .filter_map(|entry| entry.ok())
+        .filter(|path| path.extension().map_or(false, |ext| ext == "md"))
+        .map(|path| {
+            let title = generate_title(&path);
+            let markdown = read_to_string(&path)?;
+            let url: &'static Path = Box::leak(
+                path.strip_prefix(PAGE_CACHE_DIR)
+                    .unwrap()
+                    .with_extension("")
+                    .into_boxed_path(),
+            );
+
+            let markdown_parser =
+                generate_heading_slugs(Parser::new_ext(&markdown, markdown_options));
+            let mut markdown_as_html = String::new();
+            pulldown_cmark::html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
+
+            let html = template
+                .clone()
+                .replace("{{html}}", &markdown_as_html)
+                .replace("{{title}}", &title);
+
+            let emoji_substitute_content = emoji_parser.inline_from_directory(&html);
+            let leaked_emoji_substitute_content: &'static str =
+                Box::leak(emoji_substitute_content.into_boxed_str());
+
+            Ok((url, leaked_emoji_substitute_content))
+        })
+        .collect::<Result<HashMap<_, _>, std::io::Error>>()?;
+
     unsafe {
-        PAGE_CACHE.write(recursive_load_directory(HashMap::new(), directory)?);
+        PAGE_CACHE.write(pages);
     }
 
     Ok(())
-}
-
-fn recursive_load_directory(
-    mut pages: HashMap<&'static Path, &'static str>,
-    directory: &Path,
-) -> Result<HashMap<&'static Path, &'static str>, std::io::Error> {
-    for entry in read_dir(directory)? {
-        let entry = entry?;
-        let path = entry.path();
-
-        if path.is_dir() {
-            pages = recursive_load_directory(pages, &path)?;
-            continue;
-        }
-
-        if !path.extension().map_or(false, |ext| ext == "md") {
-            continue;
-        }
-
-        let title = generate_title(&path);
-        let markdown = read_to_string(&path)?;
-        let url = Box::leak(
-            path.strip_prefix(PAGE_CACHE_DIR)
-                .unwrap()
-                .with_extension("")
-                .into_boxed_path(),
-        );
-
-        let markdown_options = Options::empty()
-            | Options::ENABLE_TABLES
-            | Options::ENABLE_STRIKETHROUGH
-            | Options::ENABLE_HEADING_ATTRIBUTES;
-
-        let markdown_parser = generate_heading_slugs(Parser::new_ext(&markdown, markdown_options));
-        let mut markdown_as_html = String::new();
-        pulldown_cmark::html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
-
-        let template = read_to_string(Path::new(PAGE_CACHE_DIR).join("templates/template.html"))?;
-
-        let html = template
-            .clone()
-            .replace("{{html}}", &markdown_as_html)
-            .replace("{{title}}", &title);
-
-        let mut emoji_parser =
-            TwemojiParser::inline_from_local_file(Path::new(PAGE_CACHE_DIR).join("emojis"));
-        let emoji_substitute_content = emoji_parser.parse(&html);
-        let leaked_emoji_substitute_content = Box::leak(emoji_substitute_content.into_boxed_str());
-
-        pages.insert(url, leaked_emoji_substitute_content);
-    }
-
-    Ok(pages)
 }
 
 fn generate_title(path: &Path) -> String {

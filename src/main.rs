@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
-use std::{net::Ipv4Addr, path::Path};
+use std::net::Ipv4Addr;
 
 use clap::Parser;
 use lets_encrypt_listener::LetsEncryptListener;
@@ -9,9 +9,8 @@ use rocket::listener::tcp::TcpListener;
 use rustls_acme::{AcmeConfig, caches::DirCache};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-use crate::pages::PAGE_CACHE_DIR;
-
 mod api;
+mod emojis;
 mod lets_encrypt_listener;
 mod pages;
 
@@ -48,7 +47,7 @@ struct Args {
 async fn main() {
     let args = Args::parse();
 
-    pages::set_page_cache(Path::new(PAGE_CACHE_DIR)).unwrap();
+    pages::set_page_cache().unwrap();
 
     let rocket = rocket::build()
         .mount("/", routes![api::index, api::html_or_file, api::search])
@@ -68,7 +67,7 @@ async fn main() {
                     tokio::spawn(async move {
                         let mut buf = [0; 1024];
                         if socket.read(&mut buf).await.is_ok() {
-                            // Simple HTTP 301 redirect response
+                            // Simple HTTP 301 redirect response:
                             let response = "HTTP/1.1 301 Moved Permanently\r\n\
                                           Location: https://auxv.org\r\n\
                                           Connection: close\r\n\r\n";
