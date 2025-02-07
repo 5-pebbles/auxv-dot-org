@@ -5,7 +5,7 @@
 function build_zip() {
   mkdir "./target/zip"
 
-  cargo build --release --target=x86_64-unknown-linux-musl -F https
+  cargo build --release --target=x86_64-unknown-linux-musl
 
   cp "./target/x86_64-unknown-linux-musl/release/auxv-dot-org" "./target/zip/auxv-dot-org"
   cp -r "./pages" "./target/zip/pages"
