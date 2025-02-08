@@ -18,26 +18,25 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 
 ## Site Map 📜
 
-#### The Basics
+### The Basics
 
 - [Home](/) (You are here)
 - [About](/about)
 - [Resume](/resume/imperial.pdf)
 
-#### Projects
+### Projects
 
-**Auxv-Dot-Org 🧠🗃️**
+#### Auxv-Dot-Org 🧠🗃️
 > Yes, this is a self-referential blog... whatcha gonna do about it?
 - [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](projects/auxv-dot-org/lets_encrypt_acme)
 
-**Miros 🌸🌿**
+#### Miros 🌸🌿
 > A modern ELF interpreter (dynamic linker/loader) written in Rust.
 - [Chapter 1: Where to `_start`](projects/miros/chapter_1)
 <!-- - [Chapter 2: The Three Musketeers](projects/miros/chapter_2) -->
 <!-- - [Chapter 3: An Unmoving Pie 🥧](projects/miros/chapter_3) -->
 <!-- - [Chapter 4: The Bugs In The Wallpaper](projects/miros/chapter_4) -->
 
-
-#### Algorithms
+### Algorithms
 
 - [Unobstructed Rectangle Sweep Line Algorithm](/algorithms/unobstructed_subrectangles)
