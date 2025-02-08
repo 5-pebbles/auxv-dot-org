@@ -1,3 +1,9 @@
+<head>
+  <title>Home | Auxv.org</title>
+  <meta name="author" content="Owen Friedman">
+  <meta name="description" content="I am the slugcat, slayer of dragons, eater of bugs. A hangry(🌮) self-taught software developer trying to rewrite the world one line at a time.">
+</head>
+
 <style>
 #title {
   border-bottom: 2px solid var(--overlay);

@@ -1,3 +1,8 @@
+<head>
+  <title>Chapter 1: Where to _start</title>
+  <meta name="author" content="Owen Friedman">
+<head/>
+
 # Chapter 1: Where to `_start`
 
 As part of my ongoing campaign to convince the world I am worthy of an entry level position, I am writing a dynamic linker from scratch in **Rust**.

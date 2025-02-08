@@ -1,4 +1,10 @@
-# Rocket + TLS via Let's Encrypt
+<head>
+  <title>Let's Encrypt Acme | Auxv.org</title>
+  <meta name="author" content="Owen Friedman">
+  <meta name="description" content="How to implement Let's Encrypt certification with the Rocket WebFramwork and Rust 🗳️🚀⚙️...">
+</head>
+
+# TLS via Let's Encrypt + Rocket + Rust 🗳️🚀⚙️
 
 After building this entire dang website with `axum`, I had the sudden realization that I wasn't particularly fond of using it. Like any self-respecting developer, I decided to stay up "late" (like 9PM) and port everything to `Rocket`.
 
@@ -10,6 +16,7 @@ The migration was surprisingly smooth sailing(⛵) that is until I started setti
 <details>
 <summary><b>Table of Contents:</b></summary>
 
+- [TLS via Let's Encrypt + Rocket + Rust 🗳️🚀⚙️](#tls-via-lets-encrypt--rocket--rust)
 - [How Let's Encrypt Works 🔐⬆️⬇️](#how-lets-encrypt-works)
 - [The Discoveries 🧪](#the-discoveries)
 - [Copy and Past(e | a) 🍝](#copy-and-paste--a)

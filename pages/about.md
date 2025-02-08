@@ -1,3 +1,9 @@
+<head>
+  <title>About Owen Friedman | Auxv.org</title>
+  <meta name="author" content="Owen Friedman">
+  <meta name="description" content="Hello(👋), I’m Owen Friedman, a self-taught software developer primarily focused on low-level systems development.">
+</head>
+
 <style>
 #heading {
   display: flex;
