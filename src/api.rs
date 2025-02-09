@@ -61,19 +61,21 @@ fn escape_html(s: &str) -> String {
 fn get_match_context(content: &str, query: &str) -> String {
     let start = content.find(query).unwrap();
     let end = start + query.len();
-
-    let before_start = start.saturating_sub(20);
-    let after_end = (end + 30).min(content.len());
-
-    let before = &content[before_start..start];
-    let matched_part = &content[start..end];
-    let after = &content[end..after_end];
+    let before_start = content[..start]
+        .char_indices()
+        .rev()
+        .nth(19)
+        .map_or(0, |(i, _)| i);
+    let after_end = content[end..]
+        .char_indices()
+        .nth(29)
+        .map_or(content.len(), |(i, _)| end + i);
 
     format!(
         "{}<b>{}</b>{}",
-        escape_html(before),
-        escape_html(matched_part),
-        escape_html(after)
+        escape_html(&content[before_start..start]),
+        escape_html(&content[start..end]),
+        escape_html(&content[end..after_end])
     )
 }
 
