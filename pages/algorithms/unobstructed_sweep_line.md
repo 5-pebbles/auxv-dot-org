@@ -28,7 +28,7 @@ However, I could not find a fast algorithm to locate these gaps, so I did it mys
 <details>
 <summary><b>Table of Contents:</b></summary>
 
-- [My Super Awesome Unobstructed Rectangle Sweep Line Algorithm 📊](#my-supper-awesome-unobstructed-rectangle-sweep-line-algorithm)
+- [My Super Awesome Unobstructed Rectangle Sweep Line Algorithm 📊](#my-super-awesome-unobstructed-rectangle-sweep-line-algorithm)
 - [Section 1: Locating Important Lines 🔭](#section-1-locating-important-lines)
 - [Section 2: Finding Gaps Between Obstructions 📏](#section-2-finding-gaps-between-obstructions)
 - [Section 3: Rectangle Identification 🧱](#section-3-rectangle-identification)
