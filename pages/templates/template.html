@@ -17,7 +17,7 @@
     <div id="search-menu">
       <div id="search-container">
         <input id="search-input" type="text" placeholder="Search pages for html, title, and url...">
-        <button id="search-exit" onclick="hideOverlay()">ESC</button>
+        <button id="search-exit" onclick="toggleOverlay(false)">ESC</button>
       </div>
       <nav id="search-results">
       </nav>
@@ -33,7 +33,7 @@
           </svg>
           <span>Home</span>
         </button>
-        <button class="search-button" onclick="showOverlay()">
+        <button class="search-button" onclick="toggleOverlay(true)">
           <span class="search-hint">Type <b>`s`</b> to search...</span>
           <div class="search-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

@@ -8,6 +8,7 @@ const elements = {
 const toggleOverlay = (show) => {
   elements.overlay.style.display = show ? 'block' : 'none';
   if (show) {
+    elements.results.innerHTML = '';
     elements.search.value = '';
     elements.search.focus();
   }
