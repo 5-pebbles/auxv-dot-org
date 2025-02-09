@@ -170,11 +170,11 @@ After processing all lines, any remaining active rectangles are added to the com
   fetch('https://raw.githubusercontent.com/5-pebbles/rect-lib/refs/heads/main/src/unobstructed_sweep_line.rs')
     .then(response => response.text())
     .then(text => {
-      const escaped_text = text
+      const escapedText = text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
-      document.getElementById('raw-content').innerHTML = `<pre><code class="language-rs">${escaped_text}</code></pre>`;
+      document.getElementById('raw-content').innerHTML = `<pre><code class="language-rs">${escapedText}</code></pre>`;
       hljs.highlightAll();
     })
     .catch(error => {

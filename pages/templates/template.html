@@ -6,26 +6,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="/favicon.svg">
-  <!-- Normal CSS -->
+  <!-- Load CSS -->
   <link rel="stylesheet" href="/templates/template.css" />
   <!-- Load Font (Cascadia Code): -->
   <link rel="stylesheet" href="/font/cascadia_code.css" />
-  <!-- Highlight JS -->
-  <link rel="stylesheet" href="/highlight_js/rose-pine.css" />
-  <script src="/highlight_js/main.js"></script>
-  <!-- Load Additional Languages -->
-  <script src="/highlight_js/langs/rust.js"></script>
-  <script>hljs.highlightAll();</script>
 </head>
 
 <body>
-  <div id="overlay" style="display: none;">
-    <div id="overlay-menu">
-      <div id="overlay-search-container">
-        <input id="overlay-search-input" type="text" placeholder="Search pages for html, title, and url...">
-        <button id="overlay-exit" onclick="hideOverlay()">ESC</button>
+  <div id="search-overlay" style="display: none;">
+    <div id="search-menu">
+      <div id="search-container">
+        <input id="search-input" type="text" placeholder="Search pages for html, title, and url...">
+        <button id="search-exit" onclick="hideOverlay()">ESC</button>
       </div>
-      <nav id="overlay-results">
+      <nav id="search-results">
       </nav>
     </div>
   </div>
@@ -39,9 +33,9 @@
           </svg>
           <span>Home</span>
         </button>
-        <button class="search-container" onclick="showOverlay()">
+        <button class="search-button" onclick="showOverlay()">
           <span class="search-hint">Type <b>`s`</b> to search...</span>
-          <div class="search-button">
+          <div class="search-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -53,10 +47,17 @@
     </div>
   </div>
   
-  <!-- Normal JS -->
-  <script src="/templates/template.js"></script>
   <!-- Allow Copy + Paste with Inlined SVG Emojis -->
   <script src="/templates/emoji_copy_paste.js"></script>
+  <!-- Search Overlay -->
+  <link rel="stylesheet" href="/templates/search-overlay.css">
+  <script src="/templates/search-overlay.js"></script>
+  <!-- Highlight JS -->
+  <link rel="stylesheet" href="/highlight_js/rose-pine.css" />
+  <script src="/highlight_js/main.js"></script>
+  <!-- Load Additional Languages -->
+  <script src="/highlight_js/langs/rust.js"></script>
+  <script>hljs.highlightAll();</script>
 </body>
 
 </html>
