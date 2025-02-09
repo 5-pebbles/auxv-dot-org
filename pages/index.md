@@ -11,7 +11,7 @@
 }
 </style>
 
-<h1 id="title">Welcome to the Auxiliary Vector 🏗️</h1>
+<h1 id="title">Welcome to the Auxiliary Vector 🧠</h1>
 
 A collection of neurons and synapses flicker to life, within the Laniakea Supercluster. A living catalog of articles, documentation, and accumulated knowledge has finally found a reader.
 
