@@ -133,7 +133,7 @@ When it encounters a gap on an `opening line` without an already active rectangl
 
 When it encounters a `closing line` the algorithm checks if each active rectangle fits within one of the gaps. If it does, the rectangle continues uninterrupted, otherwise:
 - It is added to the completed rectangles list, ending one unit before the current line started.
-  - If the closed rectangle was only partially obstructed, it is also subdivided into the gaps contained within; the new active rectangles have the same start position as the original.
+  - If the closed rectangle was only partially obstructed, it is subdivided into the gaps contained within; the new active rectangles have the same start position as the original.
 
 ![image](/algorithms/diagrams/unobstructed_sweep_line-5.svg)
 
