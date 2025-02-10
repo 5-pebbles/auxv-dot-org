@@ -12,6 +12,9 @@
   --pine: #31748f;
   --foam: #9ccfd8;
   --iris: #c4a7e7;
+  --highlight-low: #21202e;
+  --highlight-med: #403d52;
+  --highlight-high: #524f67;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
   transition-duration: .15s;
@@ -199,7 +202,7 @@ img:not(.emoji) {
 }
 
 .home-button:hover {
-  background-color: transparent;
+  background-color: var(--highlight-med);
 }
 
 .home-button svg {
@@ -228,7 +231,7 @@ img:not(.emoji) {
 }
 
 .search-button:hover {
-  background-color: var(--surface);
+  background-color: var(--highlight-med);
 }
 
 .search-hint {
