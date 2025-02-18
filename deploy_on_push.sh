@@ -35,6 +35,7 @@ function deploy_zip() {
 # Format: [user host secret_path]
 declare -a deployments=(
   "ghostbird acceptance.auxv.org top_secret_do_not_share/acceptance.key"
+  "root authority.auxv.org top_secret_do_not_share/authority.key"
 )
 
 
