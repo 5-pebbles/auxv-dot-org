@@ -32,7 +32,8 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 
 #### Miros 🌸🌿
 > A modern ELF interpreter (dynamic linker/loader) written in Rust.
-- [Chapter 1: Where to `_start`](projects/miros/chapter_1)
+- [The Three Musketeers 👨‍👨‍👦](projects/miros/the_three_musketeers)
+<!-- - [Chapter 1: Where to `_start`](projects/miros/chapter_1) -->
 <!-- - [Chapter 2: The Three Musketeers](projects/miros/chapter_2) -->
 <!-- - [Chapter 3: An Unmoving Pie 🥧](projects/miros/chapter_3) -->
 <!-- - [Chapter 4: The Bugs In The Wallpaper](projects/miros/chapter_4) -->
