@@ -14,7 +14,7 @@
   max-width: 800px;
   height: 80vh;
   opacity: 0.96;
-  background-color: var(--overlay);
+  background-color: var(--surface);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
   padding-inline: 14px;
   padding-top: 16px;
   padding-bottom: 12px;
-  border-bottom: 3px solid var(--surface);
+  border-bottom: 3px solid var(--base);
 }
 
 #search-input {
@@ -52,7 +52,7 @@
 #search-exit {
   color: var(--love);
   font-weight: bold;
-  background: var(--surface);
+  background: var(--base);
   display: inline-flex;
   align-items: center;
   border: none;

@@ -1,5 +1,6 @@
 :root {
   /* rose pine */
+  --base-dark: #13111c;
   --base: #191724;
   --surface: #1f1d2e;
   --overlay: #26233a;
@@ -23,7 +24,7 @@
 body {
   font-family: 'Cascadia Code', monospace;
   font-size: 1.1rem;
-  background-color: var(--base);
+  background-color: var(--base-dark);
   color: var(--text);
   line-height: 2rem;
 }
@@ -33,7 +34,7 @@ body {
   margin: 0 auto;
   padding-inline: 2rem;
   padding-block: 1rem;
-  background-color: var(--surface);
+  background-color: var(--base);
   min-height: 100vh;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
@@ -83,7 +84,7 @@ h5 {
 /* Code: */
 code {
   color: var(--gold);
-  background: var(--base);
+  background: var(--base-dark);
   padding-inline: 0.6rem;
   padding-block: 0.2rem;
   border-radius: 4px;
@@ -127,7 +128,7 @@ table {
   padding-inline: 1em;
   padding-top: 0.5em;
   padding-bottom: 1em;
-  background: var(--base);
+  background: var(--base-dark);
   border-radius: 4px;
   line-height: 2rem;
 }
@@ -165,6 +166,7 @@ a:hover {
 /* Comment: */
 blockquote {
   color: var(--muted);
+  font-style: italic;
   padding-left: 1em;
   border-left: .25em solid var(--muted);
 }
@@ -189,7 +191,7 @@ img:not(.emoji) {
 }
 
 .home-button {
-  background-color: var(--overlay);
+  background-color: var(--surface);
   height: 48px;
   display: inline-flex;
   align-items: center;
@@ -202,7 +204,7 @@ img:not(.emoji) {
 }
 
 .home-button:hover {
-  background-color: var(--highlight-med);
+  background-color: var(--overlay);
 }
 
 .home-button svg {
@@ -223,7 +225,7 @@ img:not(.emoji) {
   border: none;
   display: inline-flex;
   align-items: center;
-  background-color: var(--overlay);
+  background-color: var(--surface);
   border-radius: 6px;
   height: 48px;
   transition: background-color 0.3s ease;
@@ -231,7 +233,7 @@ img:not(.emoji) {
 }
 
 .search-button:hover {
-  background-color: var(--highlight-med);
+  background-color: var(--overlay);
 }
 
 .search-hint {

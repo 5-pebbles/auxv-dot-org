@@ -17,10 +17,12 @@
 }
 
 pre code.hljs {
+  font-family: 'Cascadia Code', monospace;
+  line-height: 1.2em;
   display: block;
   overflow-x: auto;
   padding: 1em;
-  border-radius: 10px;
+  border-radius: 4px;
   margin-block: 1rem;
 }
 
@@ -29,7 +31,7 @@ code.hljs {
 }
 
 .hljs {
-  background: var(--color-rosepine-overlay)
+  background: var(--surface);
 }
 
 .hljs,
@@ -125,7 +127,8 @@ code.hljs {
 
 .hljs-comment,
 .hljs-quote {
-  color: var(--color-rosepine-muted)
+  color: var(--muted);
+  font-style: italic;
 }
 
 .hljs-doctag {
