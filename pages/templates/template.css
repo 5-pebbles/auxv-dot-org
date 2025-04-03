@@ -353,3 +353,65 @@ img:not(.emoji) {
     padding-inline: 1rem;
   }
 }
+
+/* Animated dashed underline with sparkle emojis for <u> elements */
+u {
+  text-decoration-line: none;
+  border-bottom: none;
+  position: relative;
+  padding: 0 15px; /* Add small padding for sparkle spacing */
+  display: inline-block;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--love) 0,
+    var(--love) 5px,
+    transparent 5px,
+    transparent 10px
+  );
+  background-position: 0 calc(95% - 0px);
+  background-repeat: repeat-x;
+  background-size: 20px 2px;
+  animation: dash-scroll 2s linear infinite;
+}
+
+/* Left sparkle that fades in and out */
+u::before {
+  content: "✨";
+  position: absolute;
+  font-size: 1em;
+  left: -0.3em;
+  top: 0;
+  animation: sparkle-fade 4s ease-in-out infinite;
+  z-index: 2;
+}
+
+/* Right sparkle that fades in and out */
+u::after {
+  content: "✨";
+  position: absolute;
+  font-size: 1em;
+  right: -0.3em;
+  top: 0;
+  animation: sparkle-fade 4s ease-in-out infinite  0.5s;
+  z-index: 2;
+}
+
+/* Animation for fading sparkles */
+@keyframes sparkle-fade {
+  0%, 100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Animation for scrolling dashed line */
+@keyframes dash-scroll {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 20px;
+  }
+}
