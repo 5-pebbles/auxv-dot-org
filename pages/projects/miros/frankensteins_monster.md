@@ -387,4 +387,4 @@ And with that you have a handwritten `Elf` file, in its beautiful simplicity.
 
 That's all for today folks!
 
-[Next: Chapter 2](/projects/miros/the_three_musketeers)
+<!-- [Next: Chapter 2](/projects/miros/the_three_musketeers) -->
