@@ -41,3 +41,7 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 ### Algorithms
 
 - [My Super Awesome Unobstructed Rectangle Sweep Line Algorithm 📊](/algorithms/unobstructed_sweep_line)
+
+### Literally Everything Else...
+
+- [Theming Your TTY Using Kernel Arguments 🔴 🟢 🔵](/random_crap/ttwhy)
