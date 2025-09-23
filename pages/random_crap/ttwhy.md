@@ -14,6 +14,11 @@ If only the Linux kernel developers made kernel arguments just for this...
 <br/>
 <details>
 <summary><b>Table of Contents:</b></summary>
+
+- [vt.default_(red 🔴 | grn 🟢 | blu 🔵)](#vtdefaultred---grn---blu)
+- [How to Pass Kernel Arguments](#how-to-pass-kernel-arguments)
+  1. [EFI boot stub](#1-efi-boot-stub)
+
 </details>
 
 
@@ -61,7 +66,7 @@ vt.default_blu=58,150,149,159,244,230,202,224,120,150,149,159,244,230,202,203
 
 Select the instructions that work for you're bootloader/system:
 
-### 1. **EFI boot stub**
+### 1. EFI boot stub
 
 If you're using direct EFI boot, add the arguments to your `efibootmgr` command:
 
