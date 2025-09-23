@@ -15,7 +15,8 @@ If only the Linux kernel developers made kernel arguments just for this...
 <details>
 <summary><b>Table of Contents:</b></summary>
 
-- [vt.default_(red 🔴 | grn 🟢 | blu 🔵)](#vtdefaultred---grn---blu)
+- [vt.default_(red 🔴 | grn 🟢 | blu 🔵)](#vtdefaultred---grn---blu) \
+  [Catppuccin](#catppuccin)
 - [How to Pass Kernel Arguments](#how-to-pass-kernel-arguments)
   1. [EFI boot stub](#1-efi-boot-stub)
 
@@ -41,7 +42,7 @@ The kernel indexes each array with the `Id` to set the RGB values for each color
 
 <br/>
 <details>
-<summary><b>Catppuccin</b></summary>
+<summary id="catppuccin"><b>Catppuccin</b></summary>
 
 ```
 vt.default_red=36,237,166,238,138,245,139,184,91,237,166,238,138,245,139,165
