@@ -5,11 +5,11 @@
 
 # Theming Your Linux TTY Using Kernel Arguments | TT-Why? 🖨️
 
-I really don't like the default theme of the Linux TTY (🤮)... I've seen some blog post about using terminal escape codes in `/etc/issues` and `~/.bashrc`, but this leaves the default theme around for the startup log messages.
+I really don't like the default theme of the Linux TTY (🤮)... I've seen some blog posts about using terminal escape codes in `/etc/issues` and `~/.bashrc`, but this leaves the default theme around for the startup log messages.
 
 <br/>
 
-If only the Linux kernel developers made kernel arguments just for this...
+If only the Linux kernel developers had made some kernel arguments just for this... (they did).
 
 <br/>
 <details>
@@ -25,7 +25,7 @@ If only the Linux kernel developers made kernel arguments just for this...
 
 ## vt.default_(red 🔴 | grn 🟢 | blu 🔵)
 
-The not so secret is: [`vt.default_red`, `vt.default_grn`, and `vt.default_blu`], each takes an array of 16 comma-separated 8-bit (0-255) decimal numbers represent the terminal colors.
+The kernel arguments in question are: [`vt.default_red`, `vt.default_grn`, and `vt.default_blu`], each takes an array of 16 comma-separated 8-bit (0-255) decimal numbers representing the terminal colors.
 
 <br/>
 
@@ -65,7 +65,7 @@ vt.default_blu=58,150,149,159,244,230,202,224,120,150,149,159,244,230,202,203
 
 ## How to Pass Kernel Arguments
 
-Select the instructions that work for you're bootloader/system:
+Select the instructions that work for your bootloader/system:
 
 ### 1. EFI boot stub
 
