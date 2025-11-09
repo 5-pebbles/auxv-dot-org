@@ -1,6 +1,7 @@
 <head>
   <title> TT-Why? 🖨️ | Auxv.org </title>
   <meta name="author" content="Owen Friedman">
+  <meta name="description" content="How to develop your own Linux TTY themes, plus a few examples.">
 </head>
 
 # Theming Your Linux TTY Using Kernel Arguments | TT-Why? 🖨️
@@ -16,7 +17,8 @@ If only the Linux kernel developers had made some kernel arguments just for this
 <summary><b>Table of Contents:</b></summary>
 
 - [vt.default_(red 🔴 | grn 🟢 | blu 🔵)](#vtdefaultred---grn---blu) \
-  [Catppuccin](#catppuccin)
+  [Catppuccin](#catppuccin) \
+  [Bogster](#bogster)
 - [How to Pass Kernel Arguments](#how-to-pass-kernel-arguments)
   1. [EFI boot stub](#1-efi-boot-stub)
 
@@ -48,6 +50,17 @@ The kernel indexes each array with the `Id` to set the RGB values for each color
 vt.default_red=36,237,166,238,138,245,139,184,91,237,166,238,138,245,139,165
 vt.default_grn=39,135,218,212,173,189,213,192,96,135,218,212,173,189,213,173
 vt.default_blu=58,150,149,159,244,230,202,224,120,150,149,159,244,230,202,203
+```
+
+</details>
+
+<details>
+<summary id="bogster"><b>Bogster</b></summary>
+
+```
+vt.default_red=22,211,87,165,54,183,35,198,171,220,127,220,89,220,89,229
+vt.default_grn=28,44,163,128,178,89,165,184,178,89,220,182,220,89,220,222
+vt.default_blu=35,93,49,35,212,220,128,173,191,127,89,89,216,192,183,214
 ```
 
 </details>
