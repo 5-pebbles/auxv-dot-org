@@ -40,10 +40,7 @@ declare -a deployments=(
 
 exec < /dev/tty
 
-branch=$(git rev-parse --abbrev-ref HEAD)
-if [ "$branch" != "main" ]; then
-  exit 0
-elif ! git diff --quiet; then
+if ! git diff --quiet; then
     echo "Error: You have unstaged changes."
     echo "Please stage or stash your changes before deploying."
     exit 1
@@ -51,6 +48,15 @@ elif ! git diff --cached --quiet; then
     echo "Error: You have staged but uncommitted changes."
     echo "Please commit your changes before deploying."
     exit 1
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != "main" ]; then
+    read -p "Warning: You're deploying from non-main branch '$branch'. Are you sure you'd like to continue? [y/N]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      exit 1
+    fi
 fi
 
 echo "Building zip:"
