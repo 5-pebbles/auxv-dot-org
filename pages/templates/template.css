@@ -363,6 +363,20 @@ img:not(.emoji) {
   }
 }
 
+hr {
+  border: none;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+hr::before {
+  content: '--- --- ---';
+  font-size: 2.5rem;
+  color: var(--love);
+}
+
 /* Animated dashed underline with sparkle emojis for <u> elements */
 u {
   text-decoration-line: none;
