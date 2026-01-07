@@ -73,7 +73,7 @@ This is my website where I can whisper into the void about the things that fasci
 ## Inventory 📦
 
 - **Hp Pavilion Dv7:** My laptop; it's a beast with an AMD Turion X2 and 3.81-GiB of RAM.
-- **Corne v4.1.0 Keyboard:** It [crashes](https://github.com/foostan/crkbd/issues/265) if I answer the phone, but hey it's ✨ergonomic✨.
+<!-- - **[FRANXX v1.1 Keyboard](projects/franxx/how_not_to_build_a_keyboard):** A simple split <u>ergonomic</u> keyboard I developed for myself. -->
 - **Cat S22 Flip:** Did you know flip phones are still a thing... </br>
   And they are made by Caterpillar the heavy equipment manufacturer.
 - **Leather Jacket:** Literally body armor, best 50 bucks my Mom ever spent.

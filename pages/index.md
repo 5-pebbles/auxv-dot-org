@@ -30,6 +30,10 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 > Yes, this is a self-referential blog... whatcha gonna do about it?
 - [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](projects/auxv-dot-org/lets_encrypt_acme)
 
+<!-- #### FRANXX -->
+<!-- > A cute little (split + BLE) computer keyboard I designed & built. -->
+<!-- - [Imprecise Instructions Relating to Keyboard Design ⌨️📺🖱️](projects/franxx/how_not_to_build_a_keyboard) -->
+
 #### Miros 🌸🌿
 > A modern ELF interpreter (dynamic linker/loader) written in Rust.
 - [Chapter 1: Frankenstein's Monster 🧟](projects/miros/frankensteins_monster)

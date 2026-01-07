@@ -1,4 +1,3 @@
 *.pdf binary
 *.woff2 binary
-pages/emojis/* binary
-pages/algorithms/diagrams/* binary
+*.svg binary
