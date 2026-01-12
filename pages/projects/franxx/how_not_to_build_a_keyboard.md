@@ -54,7 +54,7 @@ I recently completed my first hardware project: I designed and built a custom 22
 
 ## Hardware Design 📟💽
 
-This was my first PCB, I made plenty of mistakes, but it works, and I learned a few things along the way. Most of the issues stem from habits that make me a good software developer. They are the antithesis of problems I've seen in source code written by electrical engineers, namely, too much abstraction in my case vs to little abstraction.
+This was my first PCB (printed circuit board), I made plenty of mistakes, but it works, and I learned a few things along the way. Most of the issues stem from habits that make me a good software developer. They are the antithesis of problems I've seen in source code written by electrical engineers, namely, too much abstraction (in my case) vs to little abstraction.
 
 <br/>
 
@@ -139,7 +139,7 @@ The top and bottom plates are connected via 2M, 11mm spacers and 2M, 5mm screws:
   <img src="/projects/franxx/diagrams/picture_2m_5mm_screw.jpeg" alt="2M, 5mm Screws" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
 </div>
 
-And the core PCB is suspended in-between via the hot-swappable connections to the top plate.
+Then the core PCB is suspended in-between via the hot-swappable connections to the top plate.
 
 
 ### Adjustable Tenting 🏕️
@@ -157,7 +157,7 @@ I used the solution from [this](https://youtu.be/jyqRtHL9M7Y?si=Q3S2l6S5-cbuWMcZ
 
 ## Software Design 💽💾
 
-Ideally I'd like to develop my own firmware for this keyboard, the main reason being the connection architecture. Most easily customizable firmware, namely, [ZMK](https://github.com/zmkfirmware/zmk) / [Zephyr](https://github.com/zephyrproject-rtos/zephyr) Mechanical Keyboard Firmware, uses primary and secondary keyboard model.
+Ideally I'd like to develop my own firmware for this keyboard, the main reason being the connection architecture. Most easily customizable firmware, namely, [ZMK](https://github.com/zmkfirmware/zmk) / [Zephyr](https://github.com/zephyrproject-rtos/zephyr) Mechanical Keyboard Firmware, uses a primary and secondary keyboard model.
 The primary maintains two BLE connections: one to the secondary (receiving and processing its inputs) and another to the user's device:
 
 ```text
@@ -444,7 +444,7 @@ That covers everything except `franxx.keymap`, which normally stores the default
 
 <br/>
 
-It definitely needs optimization, but I'm back up to *~80wpm*, which is good enough for now. Since it uses the same syntax as every other ZMK layout, I'll just link to the [ZMK docs](https://zmk.dev/docs/keymaps):
+The layout definitely needs optimization, but I'm back up to *~80wpm*, which is good enough for now. Since it uses the same syntax as every other ZMK layout, I'll just link to the [ZMK docs](https://zmk.dev/docs/keymaps):
 
 ```c
 #include <behaviors.dtsi>
@@ -606,7 +606,7 @@ It definitely needs optimization, but I'm back up to *~80wpm*, which is good eno
 
 <!-- I'm putting dis here cause this part is finsihed and I won't look at it again, it's a good ider to work in my blog while drick or at least elize endorceses as long as I don't post it. -->
 
-As one would expect with my first circuitry-related project, there were plenty of issues. I've excluded all the software related problems since those are easily amended.
+As one would expect with my first circuitry-related project, there were plenty of issues. I've excluded all the software related problems since those were easily amended.
 
 
 ### Where's the Ground? 🏔️
