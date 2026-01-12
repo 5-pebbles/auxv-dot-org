@@ -377,6 +377,35 @@ hr::before {
   color: var(--love);
 }
 
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 2px solid var(--surface);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--iris);
+}
+
+.card h1 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--iris);
+}
+
+.card p {
+  color: var(--subtle);
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+
 /* Animated dashed underline with sparkle emojis for <u> elements */
 u {
   text-decoration-line: none;

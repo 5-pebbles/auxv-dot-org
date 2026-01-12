@@ -26,7 +26,7 @@
   margin: 30px
 }
 
-#subtitle {
+.subtitle {
   color: var(--subtle);
 }
 
@@ -47,7 +47,7 @@
 <div id="title">
 
 # Owen Friedman
-<span id="subtitle">I am the slugcat, slayer of dragons, eater of bugs.</span>
+<span class="subtitle">I am the slugcat, slayer of dragons, eater of bugs.</span>
 
 </div>
 </div>
