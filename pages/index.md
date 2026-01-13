@@ -66,6 +66,28 @@
 a.quick-link::before, a.quick-link::after {
   content: '';
 }
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card h1 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--iris);
+}
+
+.card p {
+  color: var(--subtle);
+  font-style: italic;
+  margin-bottom: 15px;
+}
 </style>
 
 <div id="heading">
