@@ -19,10 +19,10 @@
 }
 
 #profile-picture {
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  border: 4px solid var(--iris);
+  border: 2px solid var(--iris);
   margin: 30px
 }
 
@@ -42,7 +42,7 @@
 
 <div id="heading">
 
-<img id="profile-picture" src="/images/profile_picture.jpeg" alt="Profile Picture">
+<img id="profile-picture" src="/images/pudding_compressed.png" alt="Profile Picture">
 
 <div id="title">
 
