@@ -16,12 +16,12 @@ Just like in high-level programming languages, the `Elf` format uses libraries a
 <summary><b>Table of Contents:</b></summary>
 
 - [Frankenstein's Monster 🧟](#frankensteins-monster)
-- [Magic Numbers 🪄1️⃣2️⃣3️⃣](#magic-numbers-123)
-  - [Elf Header 🧝⚔️🧌](#elf-header)
-  - [Program Header Table `(╯°□°)╯︵ ┻━┻`](#program-header-table)
-- [Vaguely Related Tangential Discussion of `x86_64` 🪟🐿️](#vaguely-related-tangential-discussion-of)
-- [Some Assembly Required 🧰](#some-assembly-required)
-- [It's Alive ⚡](#its-alive)
+  - [Magic Numbers 🪄1️⃣2️⃣3️⃣](#magic-numbers-123)
+    - [Elf Header 🧝⚔️🧌](#elf-header)
+    - [Program Header Table `(╯°□°)╯︵ ┻━┻`](#program-header-table)
+  - [Vaguely Related Tangential Discussion of `x86_64` 🪟🐿️](#vaguely-related-tangential-discussion-of)
+  - [Some Assembly Required 🧰](#some-assembly-required)
+  - [It's Alive ⚡](#its-alive)
 
 </details>
 

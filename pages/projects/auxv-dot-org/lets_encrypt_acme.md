@@ -17,14 +17,14 @@ The migration was surprisingly smooth sailing(⛵) that is until I started setti
 <summary><b>Table of Contents:</b></summary>
 
 - [TLS via Let's Encrypt + Rocket + Rust 🗳️🚀⚙️](#tls-via-lets-encrypt--rocket--rust)
-- [How Let's Encrypt Works 🔐⬆️⬇️](#how-lets-encrypt-works)
-- [The Discoveries 🧪](#the-discoveries)
-- [Copy and Past(e | a) 🍝](#copy-and-paste--a)
+  - [How Let's Encrypt Works 🔐⬆️⬇️](#how-lets-encrypt-works)
+  - [The Discoveries 🧪](#the-discoveries)
+  - [Copy and Past(e | a) 🍝](#copy-and-paste--a)
 
 </details>
 
 
-### How Let's Encrypt Works 🔐⬆️⬇️
+## How Let's Encrypt Works 🔐⬆️⬇️
 
 Let's Encrypt is a non-profit certificate authority run by the Internet Security Research Group. They provide _**freeeeeee**_ certificates to anyone who can prove they control a domain. This works by presenting the server with a challenge; if the server succeeds, it is given a key that can be used to create, renew, and revoke certificates for that domain.
 
@@ -73,7 +73,7 @@ but...
 There is no support for `Rocket` nor has there been for the [last 8 years](https://github.com/rwf2/Rocket/issues/349). Thus, I found myself digging through the `Rocket` source code for the second time this week.
 
 
-### The Discoveries 🧪
+## The Discoveries 🧪
 
 I found three undocumented and unreleased traits in addition to two methods.
 
@@ -186,7 +186,7 @@ Here's how (I think) these traits operate:
 
 With that, we can write a simple `LetsEncryptListener` to automate certificate creation and renewal.
 
-### Copy and Past(e | a) 🍝
+## Copy and Past(e | a) 🍝
 
 I will update this code as needed and plan to submit a **PR** to `rustls-acme` once these features stabilize in `Rocket`: 👋
 
@@ -310,4 +310,5 @@ impl Connection for LetsEncryptConnection {
     }
 }
 ```
+
 > The End... 🌈🍯🍀

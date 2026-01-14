@@ -17,10 +17,9 @@ If only the Linux kernel developers had made some kernel arguments just for this
 <summary><b>Table of Contents:</b></summary>
 
 - [vt.default_(red 🔴 | grn 🟢 | blu 🔵)](#vtdefaultred---grn---blu) \
-  [Catppuccin](#catppuccin) \
-  [Bogster](#bogster)
+  **Transpiled Themes:** [Catppuccin](#catppuccin), [Bogster](#bogster)
 - [How to Pass Kernel Arguments](#how-to-pass-kernel-arguments)
-  1. [EFI boot stub](#1-efi-boot-stub)
+  - [EFI Boot Stub](#efi-boot-stub)
 
 </details>
 
@@ -80,7 +79,7 @@ vt.default_blu=35,93,49,35,212,220,128,173,191,127,89,89,216,192,183,214
 
 Select the instructions that work for your bootloader/system:
 
-### 1. EFI boot stub
+### EFI Boot Stub
 
 If you're using direct EFI boot, add the arguments to your `efibootmgr` command:
 
