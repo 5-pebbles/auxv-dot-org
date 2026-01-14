@@ -29,11 +29,15 @@ However, I could not find a fast algorithm to locate these gaps, so I did it mys
 <summary><b>Table of Contents:</b></summary>
 
 - [My Super Awesome Unobstructed Rectangle Sweep Line Algorithm 📊](#my-super-awesome-unobstructed-rectangle-sweep-line-algorithm)
-- [Section 1: Locating Important Lines 🔭](#section-1-locating-important-lines)
-- [Section 2: Finding Gaps Between Obstructions 📏](#section-2-finding-gaps-between-obstructions)
-- [Section 3: Rectangle Identification 🧱](#section-3-rectangle-identification)
-- [Section 4: Finalization 🏁](#section-4-finalization)
-- [Section 5: Implementation 🔩](#section-5-implementation)
+  - [Section 1: Locating Important Lines 🔭](#section-1-locating-important-lines)
+    - [Opening Lines](#opening-lines)
+    - [Closing Lines](#closing-lines)
+  - [Section 2: Finding Gaps Between Obstructions 📏](#section-2-finding-gaps-between-obstructions)
+  - [Section 3: Rectangle Identification 🧱](#section-3-rectangle-identification)
+    - [Rectangle Initialization](#rectangle-initialization)
+    - [Rectangle Termination and Subdivision](#rectangle-termination-and-subdivision)
+  - [Section 4: Finalization 🏁](#section-4-finalization)
+  - [Section 5: Implementation 🔩](#section-5-implementation)
 
 </details>
 
@@ -123,13 +127,13 @@ struct Gap<T> {
 
 As the algorithm process the gaps from left to right, it maintains a list of active rectangles and a list of completed rectangles.
 
-### Opening Lines
+### Rectangle Initialization
 
 When it encounters a gap on an `opening line` without an already active rectangle. It adds a new one starting at the current line with the gap's top and bottom.
 
 ![image](/algorithms/diagrams/unobstructed_sweep_line-4.svg)
 
-### Closing Lines
+### Rectangle Termination and Subdivision
 
 When it encounters a `closing line` the algorithm checks if each active rectangle fits within one of the gaps. If it does, the rectangle continues uninterrupted, otherwise:
 - It is added to the completed rectangles list, ending one unit before the current line started.
