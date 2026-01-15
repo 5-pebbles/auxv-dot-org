@@ -38,7 +38,7 @@ use tokio_stream::StreamExt;
 
 let acceptor = {
     let mut state = AcmeConfig::new(vec!["auxv.org"])
-        .contact(vec!["mailto:5-pebble@protonmail.com"])
+        .contact(vec!["mailto:me@auxv.org"])
         .cache_option(Some(DirCache::new("lets_encrypt_cache")))
         .directory_lets_encrypt(true)
         .state();

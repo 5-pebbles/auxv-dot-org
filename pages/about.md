@@ -61,7 +61,7 @@ I am primarily focused on low-level systems development; it's my dream to have a
 This is my website where I can whisper into the void about the things that fascinate me. I hope you enjoy and learn something new!
 
 - **Phone:** [+1 (502) 230-9990](tel:+1-502-230-9990)
-- **Email:** [5-pebble@protonmail.com](mailto:5-pebble@protonmail.com)
+- **Email:** [me@auxv.org](mailto:me@auxv.org)
 - **GitHub:** [https://github.com/5-pebbles](https://github.com/5-pebbles)
 
 
