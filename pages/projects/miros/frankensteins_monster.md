@@ -8,15 +8,11 @@
 The executables that run on your operating system are often explained away as machine code: raw instructions your computer can understand. The truth is they are more of a Frankenstein's monster stored in a format called `Elf` (🧝), which stands for executable and linkable format. The contents of `Elf` files are split into sections. Those labeled `PT_LOAD` are just raw instructions, but others contain information such as the addresses and names of the functions.
 
 <br/>
-
-Just like in high-level programming languages, the `Elf` format uses libraries and imports. The names of these libraries are stored in the `PT_DYNAMIC` section and are referred to as shared objects. When the program starts, the dynamic linker finds these dependencies and loads them from file into the same address space as the main program. Then, using another set of data structures in the `PT_DYNAMIC` section, called relocations, it updates all calls to these functions with their new addresses.
-
-<br/>
 <details>
 <summary><b>Table of Contents:</b></summary>
 
 - [Frankenstein's Monster 🧟](#frankensteins-monster)
-  - [Magic Numbers 🪄1️⃣2️⃣3️⃣](#magic-numbers-123)
+  - [Magic Numbers 🪄1⃣2⃣3⃣](#magic-numbers-123)
     - [Elf Header 🧝⚔️🧌](#elf-header)
     - [Program Header Table `(╯°□°)╯︵ ┻━┻`](#program-header-table)
   - [Vaguely Related Tangential Discussion of `x86_64` 🪟🐿️](#vaguely-related-tangential-discussion-of)
@@ -26,7 +22,7 @@ Just like in high-level programming languages, the `Elf` format uses libraries a
 </details>
 
 
-## Magic Numbers 🪄1️⃣2️⃣3️⃣
+## Magic Numbers 🪄1⃣2⃣3⃣
 
 A [magic number](https://en.wikipedia.org/wiki/List_of_file_signatures), or file signature, is a sequence of bytes used to identify a file format. Kind of like how a file extension helps <u>_**you**_</u> identify the file format, a signature helps the operating system and other applications do the same. A key difference is that it works regardless of the name and extension assigned by the file system.
 
@@ -386,4 +382,4 @@ And with that you have a handwritten `Elf` file, in its beautiful simplicity.
 
 That's all for today folks!
 
-<!-- [Next: Chapter 2](/projects/miros/the_three_musketeers) -->
+[Next: Chapter 2](/projects/miros/where_to__start)
