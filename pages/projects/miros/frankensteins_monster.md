@@ -382,4 +382,4 @@ And with that you have a handwritten `Elf` file, in its beautiful simplicity.
 
 That's all for today folks!
 
-[Next: Chapter 2](/projects/miros/where_to__start)
+<!-- [Next: Chapter 2](/projects/miros/where_to__start) -->
