@@ -42,7 +42,7 @@ At this point, both dynamic linkers are really just components of their correspo
 
 The current "separation" is a lie. They are deeply coupled, just dishonestly so. Some functionality, like thread-local storage and `pthread_cancel` coordination, can't be cleanly separated between the dynamic linker/loader, the standard library, and pthreads. As [noted](https://github.com/m4b/dryad/issues/5#issuecomment-262696880) by m4b, there are structs like `rtld_global_ro` whose definitions would need to be duplicated and populated in order to integrate with glibc's dynamic dispatch and resolver functions.
 
-> <b style="color: var(--foam)">Note:</b> That struct definition has honestly gotten worse in the 9 years since m4b commented. There are now `#include<somepackage>` statements in the definition. If you don't understand [read this](https://en.wikipedia.org/wiki/Include_directive).
+> <b style="color: var(--foam)">Note:</b> That struct definition has honestly gotten worse in the 9 years since m4b commented. There are now `#include<somefile.c>` statements in the definition. If you don't understand [read this](https://en.wikipedia.org/wiki/Include_directive).
 
 <br/>
 
