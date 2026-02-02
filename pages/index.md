@@ -126,7 +126,7 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 # Miros 🌸🌿
 A modern ELF interpreter (dynamic linker/loader) written in Rust.
 - [Chapter 1: Frankenstein's Monster 🧟](/projects/miros/frankensteins_monster)
-<!-- - [Chapter 2: Where to `_start`?](/projects/miros/where_to__start) -->
+- [Chapter 2: Where to `_start`?](/projects/miros/where_to__start)
 </div>
 
 <div class="card">

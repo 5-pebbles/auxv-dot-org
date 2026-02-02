@@ -13,7 +13,7 @@ Like high-level programming languages, the `Elf` format uses libraries and impor
 
 <br/>
 
-As far as I know, the only alternatives to this are programs acting as their own dynamic linker or programs with a predefined address in memory (can't use [ASLR](https://en.wikipedia.org/wiki/Address_space_layout_randomization)). A couple good examples of the former are the Rust crate [origin](https://github.com/sunfishcode/origin), [musl-libc](https://musl.libc.org/)'s rcrt1.o, and the [zig](https://ziglang.org/) programming language's runtime, which can all relocate themselves.
+As far as I know, the only alternatives to this are programs acting as their own dynamic linker or static linked programs with a predefined address in memory (no [PIC](https://en.wikipedia.org/wiki/Position-independent_code) position-independent code / can't use [ASLR](https://en.wikipedia.org/wiki/Address_space_layout_randomization)). A couple good examples of the former are the Rust crate [origin](https://github.com/sunfishcode/origin), [musl-libc](https://musl.libc.org/)'s rcrt1.o, and the [zig](https://ziglang.org/) programming language's runtime, which can all relocate themselves.
 
 <br/>
 <details>
@@ -52,13 +52,14 @@ There are two possible solutions (that I can think of):
 
 2. **Embed the C standard library and pthreads in the dynamic linker:** Accept that they are intertwined and make it explicit.
 
-Given that I can only find 4 attempts to write a Linux dynamic linker in the last 30 years, I'll be choosing the embedding approach. I'll likely be the only one implementing any API I define and [proliferating a new standard](https://xkcd.com/927/) is kinda pointless.
+Given that I can only find 6 attempts to write a Linux dynamic linker in the last 30 years, and that [proliferating a new standard](https://xkcd.com/927/) used only by me would be pointless, I'll choose the embedding approach.
 
 
 ## Now Let's Begin 🍫
 
 
 As you might guess, the dynamic linker is one of those executables that relocates itself. The default glibc dynamic linker `ld.so` is completely dynamic, linking its own libraries at runtime. Embedding our own copies of those libraries will cause most calls to these functions to be either inlined or called via [instruction pointer relative addressing](https://en.wikipedia.org/wiki/Addressing_mode#PC-relative) neither of which require relocation.
+
 > <b style="color: var(--foam)">Note:</b> For those who don't know Rust crates are statically linked at compile time, so unless you import a crate linking to a c library, the only dynamic dependencies will be the standard library, pthreads, and gcc (gcc provides stack unwind, we'll implement that ourselves).
 
 ### The Secret Sauce: What's on the Stack? 🥞
@@ -149,7 +150,7 @@ An ABI (application binary interface) defines how data is structured in memory, 
 
 <br/>
 
-When the kernel jumps to our dynamic linker it doesn't use a calling convention / ABI, this means we need a naked function. A naked function disables the usual prologue/epilogue, leaving argument and return value handling to the developer.
+As part of most ABI's the compiler automatically inserts a prologue into the beginning of the function, storing state and setting up for the function body. This will modify the `rsp` register before we can access it and the initial stack state. The solution is a naked function, a naked function disables the usual prologue/epilogue, leaving argument and return value handling to the developer.
 
 <br/>
 
@@ -245,7 +246,7 @@ pub unsafe extern "C" fn relocate_and_calculate_jump_address(stack_pointer: *mut
 
     // Check that `stack_pointer` is where (and what) we expect it to be.
     debug_assert_ne!(stack_pointer, null());
-    debug_assert_eq!(stack_pointer.addr() & 0b1111, 0); // 16-bit aligned
+    debug_assert_eq!(stack_pointer.addr() & 0b1111, 0); // 16-byte aligned
 
     let arg_count = *stack_pointer;
     let arg_pointer = stack_pointer.add(1).cast::<*const u8>();
@@ -258,7 +259,7 @@ pub unsafe extern "C" fn relocate_and_calculate_jump_address(stack_pointer: *mut
     let auxv_pointer = (0..)
         .map(|i| env_pointer.add(i))
         .find(|&ptr| (*ptr).is_null())
-        .unwrap_unchecked() // SAFETY: I mean, it's an infinite loop, then segfaults before it's None...
+        .unwrap_unchecked() // SAFETY: I mean, it's an infinite iterator. It'll segfault before it's None...
         .add(1)
         .cast::<AuxiliaryVectorItem>();
 
@@ -266,7 +267,7 @@ pub unsafe extern "C" fn relocate_and_calculate_jump_address(stack_pointer: *mut
 }
 ```
 
-> <b style="color: var(--love);">SAFETY:</b> It's generally a terrible idea to use `unwrap_unchecked`, but this value will never be `None` and `unwrap` segfaults at this point anyway, actually the whole panic system does, so...
+> <b style="color: var(--love);">SAFETY:</b> It's generally a terrible idea to use `unwrap_unchecked`, but this is an infinite iterator. The value will never be `None` and `unwrap` segfaults at this point anyway, actually the whole panic system does, so...
 
 <br/>
 
