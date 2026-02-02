@@ -24,7 +24,7 @@ As far as I know, the only alternatives to this are programs acting as their own
   - [Now Let's Begin 🍫](#now-lets-begin)
     - [The Secret Sauce: What's on the Stack? 🥞](#the-secret-sauce-whats-on-the-stack)
     - [Gettin' the Goods 🍟](#gettin-the-goods)
-      - [Application Binary Interface 0⃣1⃣0⃣1⃣](#abstract-binary-interface-0101)
+      - [Application Binary Interface 0⃣1⃣0⃣1⃣](#application-binary-interface-0101)
       - [Inline Assembly 📏🪛🪚](#inline-assembly)
   - [Home Sweet Home 🐚🦀](#home-sweet-home)
 
