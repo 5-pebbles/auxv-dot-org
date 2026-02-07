@@ -4,6 +4,25 @@
   <meta name="description" content="The story of designing & building a cute little (split + BLE) computer keyboard with ZMK support.">
 </head>
 
+<style>
+.side-by-side {
+  display: flex;
+}
+
+.side-by-side > img {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 500px) {
+  .side-by-side {
+    flex-direction: column;
+  }
+}
+</style>
+
 # Imprecise Instructions Relating to Keyboard Design ⌨️📺🖱️
 
 I recently completed my first hardware project: I designed and built a custom 22-key split keyboard.
@@ -83,7 +102,7 @@ This is where my issues with KiCad arose. I had traces running between pads on g
 
 KiCad doesn't support routing traces within footprints, so I used "Edit Pad as Graphic Shapes" to create traces inside the footprint. This turned out to be a mistake. The approach broke KiCad's net handling and DRC (design rules checker), and the Edit Pads functionality itself is buggy. KiCad normally assigns and validates trace nets based on connected pad nets, but this logic fails when the traces are in fact pads. I also had to manually assign nets to these pad-based traces since they don't inherit nets from neighboring connections.
 
-<div style="display: flex; gap: 300px;">
+<div class="side-by-side" style="gap: 20%;">
 <img src="/projects/franxx/diagrams/footprint_invertible_nice!nano_front.svg" alt="Diagram of Invertible Nice!Nano - Front" style="flex: 1;">
 <img src="/projects/franxx/diagrams/footprint_invertible_nice!nano_back.svg" alt="Diagram of Invertible Nice!Nano - Back" style="flex: 1;">
 </div>
@@ -92,7 +111,7 @@ KiCad doesn't support routing traces within footprints, so I used "Edit Pad as G
 
 I chose the Cherry MX footprint, because it would give me the most diversity in switch selection. I used the same "Edit Pad as Graphic Shapes" functionality to connect the two positive pads (one on each side), reducing the amount of required routing in the final PCB:
 
-<div style="display: flex; gap: 300px;">
+<div class="side-by-side" style="gap: 20%;">
 <img src="/projects/franxx/diagrams/footprint_hot_swappable_mx_switch_front.svg" alt="Diagram of Hot Swappable MX Switch - Front" style="flex: 1;">
 <img src="/projects/franxx/diagrams/footprint_hot_swappable_mx_switch_back.svg" alt="Diagram of Hot Swappable MX Switch - Back" style="flex: 1;">
 </div>
@@ -111,7 +130,7 @@ In my case the largest continuous space I could find was 4.0mm x 25mm x 50mm, so
 
 I sketched the key positions with pen and paper, which allowed faster iteration than KiCad and my printer would have. To transcribe the diagram into KiCad I used my micrometer to measure the distance from a few reference points, then placed circles at each reference point with radii equivalent to the measurements. The components could then be placed at the intersections of those circles.
 
-<img src="/projects/franxx/diagrams/pcb_measurement_radius.svg" alt="Diagram of Keyboard PCB - Front" style="width: 70%;">
+<img src="/projects/franxx/diagrams/pcb_measurement_radius.svg" alt="Diagram of Keyboard PCB - Front" style="width: 100%;">
 
 > These circles were used to align the corners of the switch on the far right.
 
@@ -134,7 +153,7 @@ I then used the `Edge.Cuts` layer to make the top and bottom plates:
 
 The top and bottom plates are connected via 2M, 11mm spacers and 2M, 5mm screws:
 
-<div style="display: flex; gap: 30px;">
+<div class="side-by-side" style="gap: 30px;">
   <img src="/projects/franxx/diagrams/picture_2m_11mm_standoff.jpeg" alt="2M, 11mm Standoffs" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
   <img src="/projects/franxx/diagrams/picture_2m_5mm_screw.jpeg" alt="2M, 5mm Screws" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
 </div>
@@ -149,7 +168,7 @@ I used the solution from [this](https://youtu.be/jyqRtHL9M7Y?si=Q3S2l6S5-cbuWMcZ
 - [Ulanzi Superclamp](https://a.co/d/dF8ZCwM)
 - [1/4" - 20 nut](https://a.co/d/gwDggMR)
 
-<div style="display: flex; gap: 30px;">
+<div class="side-by-side" style="gap: 30px;">
   <img src="/projects/franxx/diagrams/picture_tenting_left.jpeg" alt="2M, 11mm Standoffs" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
   <img src="/projects/franxx/diagrams/picture_tenting_right.jpeg" alt="2M, 5mm Screws" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
 </div>
@@ -332,7 +351,7 @@ endif
 
 The `franxx.dtsi` file defines the hardware [device tree source](https://en.wikipedia.org/wiki/Devicetree), what triggers key presses and the keymap layout. Using the `nice!nano` pinout we can map physical pins to GPIO ports and pin numbers:
 
-<img src="/projects/franxx/diagrams/nice!nano_pinout_v2.png" style="width: 60%;">
+<img src="/projects/franxx/diagrams/nice!nano_pinout_v2.png">
 
 > Pinout diagram from [Nice Technologies LLC](https://nicekeyboards.com/docs/nice-nano/pinout-schematic), used under fair use.
 
@@ -366,7 +385,7 @@ Each of our physical keys connects a GPIO pin to ground when pressed. The `GPIO_
 
 When the key is pressed and ground is bridged, there's no longer any resistance (the current simply flows to ground) and thus voltage measurements will read low.
 
-<img src="/projects/franxx/diagrams/schematic_pull_up_resistor.svg" alt="Schematic of a Pull Up Resistor" style="width: 70%;">
+<img src="/projects/franxx/diagrams/schematic_pull_up_resistor.svg" alt="Schematic of a Pull Up Resistor">
 
 The `GPIO_ACTIVE_LOW` flag tells ZMK to trigger a key press when the pin's voltage reads low.
 
@@ -621,14 +640,14 @@ Long story short: I have no idea, but there's no continuity between any of the m
 
 Yeah, not sure how I missed this one:
 
-<div style="display: flex; gap: 300px;">
+<div class="side-by-side" style="gap: 20%;">
   <img src="/projects/franxx/diagrams/pcb_where_is_the_ground_back.svg" alt="Microcontroller Connections Without Ground - Back" style="flex: 1;">
   <img src="/projects/franxx/diagrams/pcb_where_is_the_ground_front.svg" alt="Microcontroller Connections Without Ground - Front" style="flex: 1;">
 </div>
 
 The fix was straightforward, I ran a wire from a ground pin to the ground pad of the nearest key.
 
-<img src="/projects/franxx/diagrams/picture_ground_barnacle.jpeg" alt="" style="width: 70%;">
+<img src="/projects/franxx/diagrams/picture_ground_barnacle.jpeg" alt="Picture of an Oversized Wire Connecting the Group Pin and Plane">
 
 > It should be noted this is one of those things the DRC should have caught, but couldn't because of my abuse of pads as traces.
 <!-- TODO: ^ -->
@@ -637,7 +656,7 @@ The fix was straightforward, I ran a wire from a ground pin to the ground pad of
 
 For some reason I thought it would be a good idea to guesstimate the clearance on the microcontroller and upper plate. That went about as well as you'd expect:
 
-<img src="/projects/franxx/diagrams/picture_clearance_my_man.jpeg" alt="" style="width: 70%;">
+<img src="/projects/franxx/diagrams/picture_clearance_my_man.jpeg" alt="Picture of My Charding Cable Not Fitting Into the Charging Port">
 
 There isn't enough space to plugin most USB-C connectors, they are all too wide. That said I have one cable thin enough to fit, so we're all good (😮‍💨).
 
@@ -655,7 +674,7 @@ Thankfully fixing this just involves de-soldering the battery and replacing it w
 
 While this is pretty trivial compared to real-world projects I've seen, it was a good starting point. I learned the tooling and design philosophy needed for slightly larger projects, plus I got a pretty sweet keyboard out of it:
 
-<div style="display: flex; gap: 30px;">
+<div class="side-by-side" style="gap: 30px;">
   <img src="/projects/franxx/diagrams/picture_keyboard.jpeg" alt="Picture of My Keyboard" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
   <img src="/projects/franxx/diagrams/picture_desk.jpeg" alt="Picture of My Desk and Keyboard" style="flex: 1; min-width: 0; height: auto; object-fit: contain;">
 </div>
