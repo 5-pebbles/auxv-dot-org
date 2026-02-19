@@ -131,16 +131,18 @@ A modern ELF interpreter (dynamic linker/loader) written in Rust.
 
 <div class="card">
 
-# FRANXX
-A cute little (split + BLE) computer keyboard I designed & built.
-- [Imprecise Instructions Relating to Keyboard Design ⌨️📺🖱️](/projects/franxx/how_not_to_build_a_keyboard)
+# DIANAC 🧬🧮🏗️
+A slightly less [esoteric](https://en.wikipedia.org/wiki/Esoteric_programming_language) compiler for my custom esoteric [instruction set architecture](https://en.wikipedia.org/wiki/Instruction_set_architecture).
+- [Language Specification 🧬🏗️](/projects/dianac/diana_compiled_language_specification)
+- [An Emulation REPL 🐚](/projects/dianac/an_emulation_repl)
+- [Bitwise Logic & My Compiler ⚙️🧮⚡](/projects/dianac/bitwise_logic_and_my_compiler)
 </div>
 
 <div class="card">
 
-# Auxv-Dot-Org 🧠🗃️
-Yes, this is a self-referential blog... whatcha gonna do about it?
-- [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](/projects/auxv-dot-org/lets_encrypt_acme)
+# FranXX
+A cute little (split + BLE) computer keyboard I designed & built.
+- [Imprecise Instructions Relating to Keyboard Design ⌨️📺🖱️](/projects/franxx/how_not_to_build_a_keyboard)
 </div>
 
 <div class="section-header">
@@ -149,5 +151,6 @@ Yes, this is a self-referential blog... whatcha gonna do about it?
 
 </div>
 
+- [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](/projects/auxv-dot-org/lets_encrypt_acme)
 - [My Super Awesome Unobstructed Rectangle Sweep Line Algorithm 📊](/algorithms/unobstructed_sweep_line)
 - [Theming Your TTY Using Kernel Arguments 🔴 🟢 🔵](/random_crap/ttwhy)
