@@ -1,18 +1,13 @@
-#[macro_use]
-extern crate rocket;
-
 use std::net::Ipv4Addr;
 
+use auxv_dot_org::{build_rocket, pages};
 use clap::Parser;
 use lets_encrypt_listener::LetsEncryptListener;
 use rocket::listener::tcp::TcpListener;
 use rustls_acme::{AcmeConfig, caches::DirCache};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-mod api;
-mod emojis;
 mod lets_encrypt_listener;
-mod pages;
 
 /// My personal markdown based webserver (though you are welcome to use it).
 #[derive(Parser)]
@@ -49,9 +44,7 @@ async fn main() {
 
     pages::set_page_cache().unwrap();
 
-    let rocket = rocket::build()
-        .mount("/", routes![api::index, api::html_or_file, api::search])
-        .register("/", catchers![api::not_found]);
+    let rocket = build_rocket();
 
     let http_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, args.http_port))
         .await
