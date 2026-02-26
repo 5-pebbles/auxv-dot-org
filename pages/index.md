@@ -127,6 +127,7 @@ A collection of neurons and synapses flicker to life, within the Laniakea Superc
 A modern ELF interpreter (dynamic linker/loader) written in Rust.
 - [Chapter 1: Frankenstein's Monster 🧟](/projects/miros/frankensteins_monster)
 - [Chapter 2: Where to `_start`?](/projects/miros/where_to__start)
+- [Chapter ???: Slayer of Dragons, Eater of Bugs 🐔](/projects/miros/slayer_of_dragons_eater_of_bugs)(written out of order)
 </div>
 
 <div class="card">
