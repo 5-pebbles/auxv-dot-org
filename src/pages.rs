@@ -26,38 +26,44 @@ pub fn set_page_cache() -> Result<(), std::io::Error> {
         | Options::ENABLE_STRIKETHROUGH
         | Options::ENABLE_HEADING_ATTRIBUTES;
 
-    let pages = read_dir_all(PAGE_CACHE_DIR)
+    let mut pages = HashMap::new();
+
+    for path in read_dir_all(PAGE_CACHE_DIR)
         .unwrap()
         .filter_map(|entry| entry.ok())
         .filter(|path| path.extension().map_or(false, |ext| ext == "md"))
-        .map(|path| {
-            let page = read_to_string(&path)?;
-            let (head, markdown) = parse_head(&page).unwrap_or(("", &page));
-            let url: &'static Path = Box::leak(
-                path.strip_prefix(PAGE_CACHE_DIR)
-                    .unwrap()
-                    .with_extension("")
-                    .into_boxed_path(),
-            );
+    {
+        let page = read_to_string(&path)?;
+        let (head, markdown) = parse_head(&page).unwrap_or(("", &page));
+        let url: &'static Path = Box::leak(
+            path.strip_prefix(PAGE_CACHE_DIR)
+                .unwrap()
+                .with_extension("")
+                .into_boxed_path(),
+        );
 
-            let markdown_parser =
-                generate_heading_slugs(Parser::new_ext(&markdown, markdown_options));
-            let mut markdown_as_html = String::new();
-            pulldown_cmark::html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
+        let markdown_parser = generate_heading_slugs(Parser::new_ext(&markdown, markdown_options));
+        let mut markdown_as_html = String::new();
+        pulldown_cmark::html::push_html(&mut markdown_as_html, markdown_parser.into_iter());
 
-            let emoji_substitute_markdown_as_html =
-                emoji_parser.inline_from_directory(&markdown_as_html);
+        let emoji_substitute_markdown_as_html =
+            emoji_parser.inline_from_directory(&markdown_as_html);
 
-            let rendered_html = template_html
-                .clone()
-                .replace("{{html}}", &emoji_substitute_markdown_as_html)
-                .replace("{{head}}", &head);
+        let rendered_html = template_html
+            .clone()
+            .replace("{{html}}", &emoji_substitute_markdown_as_html)
+            .replace("{{head}}", &head);
 
-            let leaked_html: &'static str = Box::leak(rendered_html.into_boxed_str());
+        let leaked_html: &'static str = Box::leak(rendered_html.into_boxed_str());
 
-            Ok((url, leaked_html))
-        })
-        .collect::<Result<HashMap<_, _>, std::io::Error>>()?;
+        pages.insert(url, leaked_html);
+
+        if url.file_name().map_or(false, |name| name == "index") {
+            if let Some(directory_url) = url.parent() {
+                pages.insert(directory_url, leaked_html);
+            }
+        }
+    }
 
     unsafe {
         PAGE_CACHE.write(pages);

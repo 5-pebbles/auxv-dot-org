@@ -1,4 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::{
+    collections::HashSet,
+    path::{Path, PathBuf},
+};
 
 use either::Either;
 use rocket::{
@@ -9,15 +12,6 @@ use rocket::{
 };
 
 use crate::pages::{self, PAGE_CACHE_DIR};
-
-#[get("/")]
-pub async fn index() -> RawHtml<&'static str> {
-    pages::get_page_cache()
-        .get(Path::new("index"))
-        .cloned()
-        .map(RawHtml)
-        .unwrap()
-}
 
 #[get("/<path..>")]
 pub async fn html_or_file(path: PathBuf) -> Option<Either<RawHtml<&'static str>, NamedFile>> {
@@ -81,8 +75,10 @@ fn get_match_context(content: &str, query: &str) -> String {
 
 #[get("/search?<query>")]
 pub async fn search(query: &str) -> Json<Vec<QueryMatch>> {
+    let mut seen = HashSet::new();
     let query_matches = pages::get_page_cache()
         .into_iter()
+        .filter(|(_, html)| seen.insert(**html as *const str))
         .filter_map(|(path, html)| {
             let path_str = path.to_string_lossy();
             let html_contains = html.contains(query);
