@@ -5,11 +5,11 @@
 
 # Slayer of Dragons, Eater of Bugs 🐔
 
-If you've been following along with the chapters thus far, you should know we've been walking through a small minefield. Miros is a from-scratch runtime — dynamic linker, libc, pthreads — written in Rust. I've been trying to make minimal concession in my code style and architecture, but there are things we can't avoid: e.g., we don't have a working allocator.
+Miros is a from-scratch dynamic linker, libc, and pthreads written in Rust — which means every line of code is written while walking through a small minefield. I'm making minimal concessions in code style and architecture, but there are things we can't avoid: e.g., we don't have a working allocator during initialization.
 
 <br/>
 
-Error handling doesn't work yet either, so surprise limitations show up as segfaults. I've mentioned the issues, but never walked through how to diagnose one encountered in the wild. That will be the subject of this chapter, be prepared to get out your favorite debugger.
+Error handling doesn't work yet either, so surprise limitations show up as segfaults — and I've never walked through how to diagnose one encountered in the wild. That will be the subject of this chapter. Be prepared to get out your favorite debugger.
 
 <br/>
 
@@ -38,7 +38,7 @@ Here is the story of how a 160-byte struct, a compiler builtin, and the Global O
 
 ## An Invisible Builtin
 
-The code we wrote last chapter has a couple bugs, this was <u>totally intentional</u> on my part. It constructs an `ObjectData<NonDynamic>`, wraps a few stratagems into a pipeline, then runs them. All valid Rust:
+The code we have written up until this point has a couple of bugs. It constructs an `ObjectData<NonDynamic>`, wraps a few stratagems into a pipeline, then runs them. All valid Rust:
 
 ```rs
 // Relocate ourselves and initialize thread local storage:
@@ -80,7 +80,7 @@ Running our test binary:
 
 ### Exploring the Assembly ⚙️🏔️
 
-My favorite debugger is `rust-lldb` (🪱), which ships with the Rust toolchain. The usual workflow is as follows: run, let it crash, collect the backtrace, set a breakpoint near the fault, disassemble, and single-step to the faulting instruction.
+My favorite debugger is `rust-lldb` (🪱), which ships with the Rust toolchain. The usual workflow is as follows: run, let it crash, collect the backtrace, set a breakpoint near the fault (or step up through the stack frames), disassemble, and single-step to the faulting instruction.
 
 The segfault happens on line 105 — the `run_pipeline` call. But not *inside* `run_pipeline`.
 
@@ -97,7 +97,7 @@ Process 378540 stopped
    108
 ```
 
-After a quick disassembly we see the segfault is right before it, at a `call rax` instruction:
+After a quick disassembly, we see the segfault occurs just before the `run_pipeline` call, at a `call rax` instruction:
 
 ```x86asm
     0x7ffff7fac85e <+2014>: lea    rdi, [rsp + 0x3d0]
@@ -250,7 +250,7 @@ vtable for <Relocate as Stratagem<ObjectDataSingle>>:
 
 
 
-The first three fields are always present in every vtable, but their values differ per type. `drop_in_place` is the destructor, and `size` and `align` help us interpret the data pointer. Our trait only has one method, if we were to add another it would be defined with the next available offset, each one getting an entry in the vtable in the order in which they were defined.
+The first three fields are always present in every vtable, but their values differ per type. `drop_in_place` is the destructor, and `size` and `align` help us interpret the data pointer. Our trait only has one method. If we were to add another, it would be defined with the next available offset, each one getting an entry in the vtable in the order in which they were defined.
 
 <br/>
 
@@ -337,4 +337,4 @@ You *can* write high-level Rust at this level — generics, trait objects, itera
 
 <br/>
 
-> I wrote this chapter out of order, as in most of the preceding writing doesn't exist yet. I wanted to document it while I had the debugger logs on hand. Hopefully it will find its place someday. o7
+Eventually the linker's boot sequence split off into its own `Miros<Stage>` type-state machine. The general-purpose `ObjectPipeline` still handles loaded dependencies, but the boot path has different constraints and different failure modes — maintaining them separately turned out to be cleaner than forcing both through the same abstraction.
