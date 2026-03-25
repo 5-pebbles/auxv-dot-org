@@ -1,7 +1,4 @@
-use std::{
-    collections::HashSet,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 use either::Either;
 use rocket::{
@@ -75,10 +72,9 @@ fn get_match_context(content: &str, query: &str) -> String {
 
 #[get("/search?<query>")]
 pub async fn search(query: &str) -> Json<Vec<QueryMatch>> {
-    let mut seen = HashSet::new();
     let query_matches = pages::get_page_cache()
         .into_iter()
-        .filter(|(_, html)| seen.insert(**html as *const str))
+        .filter(|(path, _)| path.file_name() != Some("index".as_ref()))
         .filter_map(|(path, html)| {
             let path_str = path.to_string_lossy();
             let html_contains = html.contains(query);
