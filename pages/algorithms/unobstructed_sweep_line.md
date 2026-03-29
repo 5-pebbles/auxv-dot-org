@@ -186,5 +186,5 @@ After processing all lines, any remaining active rectangles are added to the com
     });
 </script>
 
-> If there is anything that can be improved, please contact [me](/about) or create an [issue](https://github.com/5-pebbles/rect-lib/issues).
+> If there is anything that can be improved, please contact [me](mailto:me@auxv.org) or create an [issue](https://github.com/5-pebbles/rect-lib/issues).
 
