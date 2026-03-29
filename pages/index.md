@@ -97,16 +97,20 @@ A cute little (split + BLE) computer keyboard I designed & built.
 
 <div class="card">
 <div class="card-header">
-<h1>Auxv-Dot-Org 🧠🗃️</h1>
-<a class="repo-link" href="https://github.com/5-pebbles/auxv-dot-org">source</a>
+<h1>DIANAC 🧬🧮🏗️</h1>
+<a class="repo-link" href="https://github.com/5-pebbles/dianac">source</a>
 </div>
 
-Yes, this is a self-referential blog... whatcha gonna do about it? A custom Rust web server built on Rocket with automatic Let's Encrypt TLS, markdown rendering, and text search.
+A slightly less [esoteric](https://en.wikipedia.org/wiki/Esoteric_programming_language) compiler for my custom esoteric [instruction set architecture](https://en.wikipedia.org/wiki/Instruction_set_architecture).
 
-- [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](/projects/auxv-dot-org/lets_encrypt_acme)
+- [Language Specification 🧬🏗️](/projects/dianac/diana_compiled_language_specification)
+<!-- - [An Emulation REPL 🐚](/projects/dianac/an_emulation_repl) -->
+<!-- - [Bitwise Logic & My Compiler ⚙️🧮⚡](/projects/dianac/bitwise_logic_and_my_compiler) -->
 </div>
+
 
 ## 📚 Articles & Guides
 
 - [My Super Awesome Unobstructed Rectangle Sweep Line Algorithm 📊](/algorithms/unobstructed_sweep_line)
+- [Automated SSL/TLS CERTS via Let's Encrypt with Rocket 🔐⬆️⬇️](/projects/auxv-dot-org/lets_encrypt_acme)
 - [Theming Your TTY Using Kernel Arguments 🔴 🟢 🔵](/random_crap/ttwhy)
