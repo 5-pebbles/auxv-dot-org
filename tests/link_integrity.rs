@@ -48,7 +48,7 @@ struct LinkChecker {
 impl LinkChecker {
     fn new() -> Self {
         Self {
-            client: Client::untracked(build_rocket()).unwrap(),
+            client: Client::untracked(build_rocket(None)).unwrap(),
             anchor: Selector::parse("a[href]").unwrap(),
             image: Selector::parse("img[src]").unwrap(),
             script: Selector::parse("script[src]").unwrap(),

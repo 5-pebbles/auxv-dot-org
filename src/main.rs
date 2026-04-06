@@ -1,9 +1,10 @@
 use std::net::Ipv4Addr;
 
-use auxv_dot_org::{build_rocket, pages};
+use auxv_dot_org::{analytics, build_rocket, pages};
 use clap::Parser;
 use lets_encrypt_listener::LetsEncryptListener;
 use rocket::listener::tcp::TcpListener;
+use rsa::{RsaPublicKey, pkcs8::DecodePublicKey};
 use rustls_acme::{AcmeConfig, caches::DirCache};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
@@ -36,6 +37,14 @@ struct Args {
     /// Directory to store Let's Encrypt cache
     #[arg(long, default_value = "lets_encrypt_cache")]
     lets_encrypt_cache: String,
+
+    /// Path to RSA public key PEM file for analytics encryption
+    #[arg(long)]
+    analytics_key: Option<String>,
+
+    /// Path to the SQLite analytics database file
+    #[arg(long, default_value = "analytics.db")]
+    analytics_db: String,
 }
 
 #[rocket::main]
@@ -44,7 +53,18 @@ async fn main() {
 
     pages::set_page_cache().unwrap();
 
-    let rocket = build_rocket();
+    let analytics = args.analytics_key.map(|key_path| {
+        let public_key_pem =
+            std::fs::read_to_string(&key_path).expect("Failed to read analytics key file");
+        let public_key = RsaPublicKey::from_public_key_pem(&public_key_pem)
+            .expect("Failed to parse analytics public key PEM");
+        let analytics = analytics::Analytics::open(&args.analytics_db, public_key)
+            .expect("Failed to open analytics database");
+        analytics.cleanup_old_records();
+        analytics
+    });
+
+    let rocket = build_rocket(analytics);
 
     let http_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, args.http_port))
         .await
