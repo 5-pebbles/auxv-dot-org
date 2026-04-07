@@ -4,7 +4,6 @@ use auxv_dot_org::{analytics, build_rocket, pages};
 use clap::Parser;
 use lets_encrypt_listener::LetsEncryptListener;
 use rocket::listener::tcp::TcpListener;
-use rsa::{RsaPublicKey, pkcs8::DecodePublicKey};
 use rustls_acme::{AcmeConfig, caches::DirCache};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
@@ -38,9 +37,9 @@ struct Args {
     #[arg(long, default_value = "lets_encrypt_cache")]
     lets_encrypt_cache: String,
 
-    /// Path to RSA public key PEM file for analytics encryption
-    #[arg(long)]
-    analytics_key: Option<String>,
+    /// Password for analytics database encryption
+    #[arg(long, env = "ANALYTICS_PASSWORD")]
+    analytics_password: Option<String>,
 
     /// Path to the SQLite analytics database file
     #[arg(long, default_value = "analytics.db")]
@@ -53,12 +52,8 @@ async fn main() {
 
     pages::set_page_cache().unwrap();
 
-    let analytics = args.analytics_key.map(|key_path| {
-        let public_key_pem =
-            std::fs::read_to_string(&key_path).expect("Failed to read analytics key file");
-        let public_key = RsaPublicKey::from_public_key_pem(&public_key_pem)
-            .expect("Failed to parse analytics public key PEM");
-        let analytics = analytics::Analytics::open(&args.analytics_db, public_key)
+    let analytics = args.analytics_password.map(|password| {
+        let analytics = analytics::Analytics::open(&args.analytics_db, &password)
             .expect("Failed to open analytics database");
         analytics.cleanup_old_records();
         analytics

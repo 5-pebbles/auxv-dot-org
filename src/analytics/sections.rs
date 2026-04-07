@@ -32,7 +32,7 @@ macro_rules! traffic_table {
         for $view in $iter {
             let entry = groups.entry($key).or_default();
             entry.0 += 1;
-            entry.1.insert($view.visitor_hash.as_ref());
+            entry.1.insert($view.visitor_ip.as_ref());
         }
         let mut sorted: Vec<_> = groups.into_iter().collect();
         sorted.sort_by($sort);
@@ -68,7 +68,7 @@ pub(super) fn render_summary(views: &[PageView], today_in_days: i64) -> String {
         .filter(|view| view.timestamp / SECONDS_PER_DAY == today_in_days)
     {
         request_count += 1;
-        unique_visitors.insert(view.visitor_hash.as_ref());
+        unique_visitors.insert(view.visitor_ip.as_ref());
         total_response_time += view.response_time_ms;
         if view.status_code >= 400 {
             error_count += 1;
