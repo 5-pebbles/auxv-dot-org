@@ -179,7 +179,7 @@ Here's how (I think) these traits operate:
 - `Listener::connect`: Handles connection initialization without blocking
 - `Listener::endpoint`: The local address of the listener
 
-- `Connection::endpoint`: The local half of the connection address
+- `Connection::endpoint`: The remote half of the connection address
 - `Connection::certificates`: I assume this returns the client's certificates for `mTLS`?
 
 <br/>
@@ -261,13 +261,9 @@ impl<T: Debug + 'static> Listener for LetsEncryptListener<T> {
     type Connection = Self::Accept;
 
     async fn accept(&self) -> Result<Self::Accept> {
-        self.0
-            .lock()
-            .await
-            .next()
-            .await
-            .unwrap()
-            .map(|tls_stream| LetsEncryptConnection(tls_stream, self.1))
+        let tls_stream = self.0.lock().await.next().await.unwrap()?;
+        let peer_addr = tls_stream.get_ref().get_ref().0.get_ref().peer_addr()?;
+        Ok(LetsEncryptConnection(tls_stream, peer_addr))
     }
 
     async fn connect(&self, accept: Self::Accept) -> Result<Self::Connection> {

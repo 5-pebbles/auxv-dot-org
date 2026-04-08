@@ -65,7 +65,7 @@ pub(super) fn render_form() -> String {
 
 pub(super) fn render_error(message: &str) -> String {
     let body = include_str!("templates/error.html").replace("{{message}}", &escape_html(message));
-    analytics_page("Analytics Error", "centered error-page", &body)
+    analytics_page("Analytics Error", "centered", &body)
 }
 
 pub(super) fn render_dashboard(views: &[PageView], now: i64) -> String {

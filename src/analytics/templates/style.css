@@ -119,8 +119,7 @@ body.centered {
   min-height: 100vh;
 }
 
-/* Login form */
-.login {
+.panel {
   max-width: 560px;
   width: 100%;
   background: var(--base);
@@ -129,7 +128,7 @@ body.centered {
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
 }
 
-.login h1 {
+.panel h1 {
   color: var(--iris);
   font-size: 1.6rem;
   margin-bottom: 1.5rem;
@@ -177,23 +176,12 @@ button {
 button:hover { background: var(--foam); }
 
 /* Error page */
-body.error-page .error { color: var(--love); }
-
-.error {
-  max-width: 420px;
-  width: 100%;
-  background: var(--base);
-  padding: 2.5rem;
-  border-radius: 8px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-  text-align: center;
-}
-
-.error h1 { color: var(--love); font-size: 1.6rem; margin-bottom: 1rem; }
+.error { text-align: center; }
+.error h1 { color: var(--love); }
 .error p { color: var(--subtle); font-size: 0.9rem; margin-top: 0.5rem; }
 
 /* No data */
-p { color: var(--subtle); font-size: 0.9rem; margin-top: 0.5rem; }
+.container p { color: var(--subtle); font-size: 0.9rem; margin-top: 0.5rem; }
 
 /* Responsive */
 @media (max-width: 600px) {
