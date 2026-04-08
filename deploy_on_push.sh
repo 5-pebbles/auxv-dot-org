@@ -35,7 +35,7 @@ function deploy_zip() {
 
 # Format: [user host secret_path]
 declare -a deployments=(
-  "root authority.auxv.org top_secret_do_not_share/acceptance.key"
+  "root southern_reach_vps_n1.auxv.org top_secret_do_not_share/southern_reach"
 )
 
 

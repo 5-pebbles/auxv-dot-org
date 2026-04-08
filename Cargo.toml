@@ -10,7 +10,7 @@ either = "1.15.0"
 log = "0.4.29"
 pulldown-cmark = "0.13.3"
 rocket = { git = "https://github.com/rwf2/Rocket.git", version = "0.6.0-dev", features = ["json", "tls"] }
-rusqlite = { version = "0.39.0", features = ["bundled-sqlcipher"] }
+rusqlite = { version = "0.39.0", features = ["bundled-sqlcipher-vendored-openssl"] }
 rustls-acme = { version = "0.15.1", features = ["ring", "tokio"] }
 subtle = "2.6.1"
 time = "0.3.47"

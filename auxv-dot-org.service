@@ -3,7 +3,7 @@ Description=Auxv Dot Org Service
 After=network.target
 
 [Service]
-ExecStart=/root/auxv-dot-org/auxv-dot-org --domain auxv.org --email me@auxv.org --analytics-password ${ANALYTICS_PASSWORD}
+ExecStart=/root/auxv-dot-org/auxv-dot-org --domain auxv.org --email me@auxv.org
 WorkingDirectory=/root/auxv-dot-org
 EnvironmentFile=/etc/auxv-dot-org.env
 # Yurp, this is a shit idea if I've ever had one...
