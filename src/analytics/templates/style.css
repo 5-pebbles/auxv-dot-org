@@ -145,7 +145,7 @@ label {
 input[type="password"] {
   width: 100%;
   background: var(--surface);
-  color: var(--text);
+  color: var(--muted);
   border: 1px solid var(--highlight-med);
   border-radius: 4px;
   padding: 0.7rem 0.8rem;
