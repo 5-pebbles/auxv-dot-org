@@ -1,6 +1,6 @@
 use std::net::Ipv4Addr;
 
-use auxv_dot_org::{build_rocket, pages};
+use auxv_dot_org::{analytics, build_rocket, pages};
 use clap::Parser;
 use lets_encrypt_listener::LetsEncryptListener;
 use rocket::listener::tcp::TcpListener;
@@ -36,6 +36,14 @@ struct Args {
     /// Directory to store Let's Encrypt cache
     #[arg(long, default_value = "lets_encrypt_cache")]
     lets_encrypt_cache: String,
+
+    /// Password for analytics database encryption
+    #[arg(long, env = "ANALYTICS_PASSWORD")]
+    analytics_password: Option<String>,
+
+    /// Path to the SQLite analytics database file
+    #[arg(long, default_value = "analytics.db")]
+    analytics_db: String,
 }
 
 #[rocket::main]
@@ -44,7 +52,14 @@ async fn main() {
 
     pages::set_page_cache().unwrap();
 
-    let rocket = build_rocket();
+    let analytics = args.analytics_password.map(|password| {
+        let analytics = analytics::Analytics::open(&args.analytics_db, &password)
+            .expect("Failed to open analytics database");
+        analytics.cleanup_old_records();
+        analytics
+    });
+
+    let rocket = build_rocket(analytics);
 
     let http_listener = TcpListener::bind((Ipv4Addr::UNSPECIFIED, args.http_port))
         .await

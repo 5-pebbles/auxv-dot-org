@@ -24,6 +24,7 @@ function deploy_zip() {
   ssh -i "$secret_path" "$user@$host" "mkdir ./auxv-dot-org-tmp \
   && unzip ./auxv-dot-org -d ./auxv-dot-org-tmp \
   && cp -r ./auxv-dot-org/lets_encrypt_cache ./auxv-dot-org-tmp/lets_encrypt_cache \
+  && cp ./auxv-dot-org/analytics.db ./auxv-dot-org-tmp/analytics.db 2>/dev/null \
   && sudo -S rm -r ./auxv-dot-org \
   ; mv ./auxv-dot-org-tmp ./auxv-dot-org \
   && sudo -S systemctl restart auxv-dot-org \
@@ -34,7 +35,7 @@ function deploy_zip() {
 
 # Format: [user host secret_path]
 declare -a deployments=(
-  "root authority.auxv.org top_secret_do_not_share/acceptance.key"
+  "root southern_reach_vps_n1.auxv.org top_secret_do_not_share/southern_reach"
 )
 
 
