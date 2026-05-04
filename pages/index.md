@@ -104,7 +104,7 @@ A cute little (split + BLE) computer keyboard I designed & built.
 A slightly less [esoteric](https://en.wikipedia.org/wiki/Esoteric_programming_language) compiler for my custom esoteric [instruction set architecture](https://en.wikipedia.org/wiki/Instruction_set_architecture).
 
 - [Language Specification 🧬🏗️](/projects/dianac/diana_compiled_language_specification)
-<!-- - [An Emulation REPL 🐚](/projects/dianac/an_emulation_repl) -->
+- [An Emulator for Some Imaginary Silicon 🫧](/projects/dianac/an_emulator_for_some_imaginary_silicon)
 <!-- - [Bitwise Logic & My Compiler ⚙️🧮⚡](/projects/dianac/bitwise_logic_and_my_compiler) -->
 </div>
 

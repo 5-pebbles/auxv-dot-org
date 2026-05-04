@@ -10,7 +10,7 @@ I've been doing this for years, when I was 19 I decided I'd like to learn how co
 
 Chapters:
 1. [Language Specification 🧬🏗️](/projects/dianac/diana_compiled_language_specification)(you are here)
-<!-- 2. [An Emulation REPL 🐚](/projects/dianac/an_emulation_repl) -->
+2. [An Emulator for Some Imaginary Silicon 🫧](/projects/dianac/an_emulator_for_some_imaginary_silicon)
 <!-- 3. [Bitwise Logic & My Compiler ⚙️🧮⚡](/projects/dianac/bitwise_logic_and_my_compiler) -->
 
 Below you'll find the specification for the language I'd eventually write.
