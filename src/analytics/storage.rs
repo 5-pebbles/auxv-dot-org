@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 use rusqlite::Connection;
 use subtle::ConstantTimeEq;
@@ -18,9 +18,10 @@ pub(super) struct PageView {
     pub visitor_ip: Option<String>,
 }
 
+#[derive(Clone)]
 pub struct Analytics {
-    connection: Mutex<Connection>,
-    password: String,
+    connection: Arc<Mutex<Connection>>,
+    password: Arc<str>,
 }
 
 impl Analytics {
@@ -44,8 +45,8 @@ impl Analytics {
         )?;
 
         Ok(Self {
-            connection: Mutex::new(connection),
-            password: password.to_owned(),
+            connection: Arc::new(Mutex::new(connection)),
+            password: password.into(),
         })
     }
 

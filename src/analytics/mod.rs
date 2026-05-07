@@ -56,7 +56,10 @@ impl Fairing for AnalyticsFairing {
             visitor_ip: request.client_ip().map(|ip| ip.to_string()),
         };
 
-        analytics.record_page_view(&view);
+        let analytics = analytics.clone();
+        let _ = rocket::tokio::task::spawn_blocking(move || {
+            analytics.record_page_view(&view);
+        });
     }
 }
 
